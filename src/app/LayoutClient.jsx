@@ -11,14 +11,19 @@ export default function LayoutClient({ children }) {
     pathname?.startsWith("/auth") ||
     pathname === "/login" ||
     pathname === "/access-denied";
+  const isDashboardPage = pathname?.startsWith("/dashboard");
 
   return (
     <ThemeProvider>
-      <Navbar />
-      <main className={isAuthPage ? "w-full" : "mx-auto max-w-7xl"}>
+      {!isDashboardPage && <Navbar />}
+      <main
+        className={
+          isAuthPage || isDashboardPage ? "w-full" : "mx-auto max-w-7xl"
+        }
+      >
         {children}
       </main>
-      <Footer />
+      {!isDashboardPage && <Footer />}
     </ThemeProvider>
   );
 }
