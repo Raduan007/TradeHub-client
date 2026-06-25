@@ -1,0 +1,12 @@
+
+> resell-hub-client@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.17.43.19:3000
+✓ Ready in 1564ms
+Creating turbopack project { dir: 'C:\\Tradehub\\resell-hub-client', testMode: true }
+
+○ Compiling / ...
+ GET / 200 in 5.7s (next.js: 4.9s, application-code: 735ms)

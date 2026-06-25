@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   FaBars,
   FaTimes,
@@ -13,6 +13,7 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import { useTheme } from "@/context/ThemeContext";
+import { signOut, useSession } from "@/lib/auth-client";
 
 import Logo from "./Logo";
 import NavLinks from "./NavLinks";
@@ -21,16 +22,23 @@ import ProfileDropdown from "./ProfileDropdown";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, toggleTheme, mounted } = useTheme();
+  const { data: session, isPending } = useSession();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
-  // Replace these with AuthContext later
-  const isLoggedIn = false;
-  const role = "guest"; // guest | applicant | employer | admin
+  const isLoggedIn = !!session?.user;
+  const role = "guest";
 
-  // Prevent hydration mismatch
+  const handleSignOut = async () => {
+    setProfileOpen(false);
+    await signOut();
+    router.push("/");
+    router.refresh();
+  };
+
   if (!mounted) {
     return null;
   }
@@ -41,10 +49,8 @@ export default function Navbar() {
 
         <div className="h-20 flex items-center justify-between">
 
-          {/* Logo */}
           <Logo />
 
-          {/* Desktop Navigation */}
           <div className="hidden lg:flex">
             <NavLinks
               role={role}
@@ -52,10 +58,8 @@ export default function Navbar() {
             />
           </div>
 
-          {/* Right Side */}
           <div className="hidden lg:flex items-center gap-5">
 
-            {/* Dark Mode Button */}
             <button
               onClick={toggleTheme}
               className="text-white hover:text-blue-500 transition"
@@ -68,18 +72,17 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Guest */}
-            {!isLoggedIn && (
+            {isPending ? null : !isLoggedIn ? (
               <>
                 <Link
-                  href="/login"
+                  href="/auth/signin"
                   className="text-white hover:text-blue-500 font-medium transition"
                 >
                   Sign In
                 </Link>
 
                 <Link
-                  href="/register"
+                  href="/auth/signup"
                   className="
                     bg-blue-600
                     hover:bg-blue-700
@@ -94,12 +97,9 @@ export default function Navbar() {
                   Get Started
                 </Link>
               </>
-            )}
-
-            {/* Logged In */}
-            {isLoggedIn && (
-              <>
-                <button className="text-white relative">
+            ) : (
+              <div className="relative flex items-center gap-5">
+                <button className="text-white relative" type="button">
                   <FaBell
                     size={20}
                     className="hover:text-blue-500 transition"
@@ -125,9 +125,8 @@ export default function Navbar() {
                 </button>
 
                 <button
-                  onClick={() =>
-                    setProfileOpen(!profileOpen)
-                  }
+                  type="button"
+                  onClick={() => setProfileOpen(!profileOpen)}
                 >
                   <FaUserCircle
                     size={34}
@@ -136,21 +135,18 @@ export default function Navbar() {
                 </button>
 
                 {profileOpen && (
-                  <ProfileDropdown
-                    role={role}
-                  />
+                  <ProfileDropdown onSignOut={handleSignOut} />
                 )}
-              </>
+              </div>
             )}
 
           </div>
 
-          {/* Mobile Menu Button */}
           <button
-            onClick={() =>
-              setMobileOpen(!mobileOpen)
-            }
+            onClick={() => setMobileOpen(!mobileOpen)}
             className="lg:hidden text-white"
+            type="button"
+            aria-label="Toggle menu"
           >
             {mobileOpen ? (
               <FaTimes size={28} />
@@ -162,15 +158,12 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-
       {mobileOpen && (
         <MobileMenu
           role={role}
-          isLoggedIn={isLoggedIn}
-          closeMenu={() =>
-            setMobileOpen(false)
-          }
+          isLoggedIn={!isPending && isLoggedIn}
+          closeMenu={() => setMobileOpen(false)}
+          onSignOut={handleSignOut}
         />
       )}
 

@@ -133,6 +133,7 @@ html.dark {
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+  font-family: "Inter", Arial, sans-serif;
 }
 
 /* Light mode specific styles */
@@ -181,5 +182,4 @@ html.dark header {
 html.dark {
   background-color: #0f172a;
 }
-
 

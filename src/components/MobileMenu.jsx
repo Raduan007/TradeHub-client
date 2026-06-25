@@ -1,8 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { FaSignOutAlt } from "react-icons/fa";
 
-export default function MobileMenu({ role, isLoggedIn, closeMenu }) {
+export default function MobileMenu({
+  role,
+  isLoggedIn,
+  closeMenu,
+  onSignOut,
+}) {
   const guestLinks = [
     { href: "/", label: "Home" },
     { href: "/browse", label: "Browse" },
@@ -32,6 +38,11 @@ export default function MobileMenu({ role, isLoggedIn, closeMenu }) {
   else if (role === "employer") links = employerLinks;
   else if (role === "admin") links = adminLinks;
 
+  const handleSignOut = async () => {
+    closeMenu();
+    await onSignOut();
+  };
+
   return (
     <nav className="bg-gray-900 border-t border-gray-800 px-6 py-4 flex flex-col gap-4">
       {links.map((link) => (
@@ -48,20 +59,31 @@ export default function MobileMenu({ role, isLoggedIn, closeMenu }) {
       {!isLoggedIn && (
         <div className="flex flex-col gap-2 mt-4 border-t border-gray-800 pt-4">
           <Link
-            href="/login"
+            href="/auth/signin"
             className="text-white hover:text-blue-500 font-medium transition text-center"
             onClick={closeMenu}
           >
             Sign In
           </Link>
           <Link
-            href="/register"
+            href="/auth/signup"
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-xl text-center transition"
             onClick={closeMenu}
           >
             Get Started
           </Link>
         </div>
+      )}
+
+      {isLoggedIn && (
+        <button
+          type="button"
+          onClick={handleSignOut}
+          className="mt-4 flex items-center justify-center gap-2 border-t border-gray-800 pt-4 text-red-400 hover:text-red-300 transition"
+        >
+          <FaSignOutAlt size={16} />
+          Sign Out
+        </button>
       )}
     </nav>
   );
