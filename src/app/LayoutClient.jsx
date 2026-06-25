@@ -7,7 +7,10 @@ import Footer from "@/components/Footer";
 
 export default function LayoutClient({ children }) {
   const pathname = usePathname();
-  const isAuthPage = pathname?.startsWith("/auth");
+  const isAuthPage =
+    pathname?.startsWith("/auth") ||
+    pathname === "/login" ||
+    pathname === "/access-denied";
 
   return (
     <ThemeProvider>

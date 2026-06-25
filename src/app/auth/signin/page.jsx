@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Alert, Button, Card, Input } from "@heroui/react";
@@ -9,6 +9,12 @@ import { signIn } from "@/lib/auth-client";
 
 export default function SignInPage() {
   const router = useRouter();
+  const [callbackUrl, setCallbackUrl] = useState(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setCallbackUrl(params.get("callbackUrl"));
+  }, []);
 
   const [form, setForm] = useState({
     email: "",
@@ -47,7 +53,7 @@ export default function SignInPage() {
         return;
       }
 
-      router.push("/");
+      router.push(callbackUrl || "/");
       router.refresh();
     } catch (err) {
       setError(
