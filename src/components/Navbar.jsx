@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { useTheme } from "@/context/ThemeContext";
 import { signOut, useSession } from "@/lib/auth-client";
+import { getUserRole } from "@/lib/user-roles";
 
 import Logo from "./Logo";
 import NavLinks from "./NavLinks";
@@ -30,7 +31,7 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
 
   const isLoggedIn = !!session?.user;
-  const role = "guest";
+  const role = isLoggedIn ? getUserRole(session.user) : "guest";
 
   const handleSignOut = async () => {
     setProfileOpen(false);
