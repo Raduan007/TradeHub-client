@@ -33,6 +33,7 @@ export default function BuyerOrdersPage() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetchingOrder, setIsFetchingOrder] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
   const [error, setError] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
 
@@ -94,6 +95,34 @@ export default function BuyerOrdersPage() {
       setError(fetchError.message || "Failed to load order details");
     } finally {
       setIsFetchingOrder(false);
+    }
+  };
+
+  const handleCancelOrder = async (orderId) => {
+    setIsCancelling(true);
+    setError("");
+
+    try {
+      const response = await fetch(`/api/buyer/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "cancel" }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to cancel order");
+      }
+
+      setSelectedOrder(data.order);
+      setOrders((current) =>
+        current.map((order) => (order.id === orderId ? data.order : order))
+      );
+    } catch (cancelError) {
+      setError(cancelError.message || "Failed to cancel order");
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -301,7 +330,12 @@ export default function BuyerOrdersPage() {
         </div>
       ) : null}
 
-      <OrderDetailsModal order={selectedOrder} state={orderModalState} />
+      <OrderDetailsModal
+        order={selectedOrder}
+        state={orderModalState}
+        onCancel={handleCancelOrder}
+        isCancelling={isCancelling}
+      />
     </div>
   );
 }

@@ -80,3 +80,31 @@ export async function getBuyerRecentOrders(buyerId, limit = 5) {
 
   return serializeDocuments(orders);
 }
+
+export async function cancelBuyerOrder(buyerId, orderId) {
+  if (!ObjectId.isValid(orderId)) {
+    return null;
+  }
+
+  const db = await getDb();
+  const order = await db.collection(BUYER_COLLECTIONS.ORDERS).findOne({
+    _id: new ObjectId(orderId),
+    buyerId,
+  });
+
+  if (!order) {
+    return null;
+  }
+
+  if (!["pending", "processing"].includes(order.status)) {
+    throw new Error("Only pending or processing orders can be cancelled");
+  }
+
+  const result = await db.collection(BUYER_COLLECTIONS.ORDERS).findOneAndUpdate(
+    { _id: new ObjectId(orderId), buyerId },
+    { $set: { status: "cancelled", updatedAt: new Date() } },
+    { returnDocument: "after" }
+  );
+
+  return serializeDocument(result);
+}

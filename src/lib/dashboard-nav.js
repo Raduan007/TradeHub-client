@@ -82,6 +82,11 @@ const sellerNav = [
     label: "Messages",
     icon: FaEnvelope,
   },
+  {
+    href: `${ROLE_DASHBOARD_PATHS[USER_ROLES.SELLER]}/profile`,
+    label: "Profile",
+    icon: FaUser,
+  },
 ];
 
 const adminNav = [

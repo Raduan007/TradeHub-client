@@ -5,7 +5,7 @@ import { Modal } from "@heroui/react";
 import { formatCurrency, formatDateTime } from "@/lib/format";
 import OrderStatusBadge from "@/components/buyer/OrderStatusBadge";
 
-export default function OrderDetailsModal({ order, state }) {
+export default function OrderDetailsModal({ order, state, onCancel, isCancelling }) {
   if (!order) {
     return null;
   }
@@ -90,6 +90,19 @@ export default function OrderDetailsModal({ order, state }) {
                 </div>
               ) : null}
             </Modal.Body>
+
+            {["pending", "processing"].includes(order.status) && onCancel ? (
+              <Modal.Footer>
+                <button
+                  type="button"
+                  onClick={() => onCancel(order.id)}
+                  disabled={isCancelling}
+                  className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+                >
+                  {isCancelling ? "Cancelling..." : "Cancel Order"}
+                </button>
+              </Modal.Footer>
+            ) : null}
           </Modal.Dialog>
         </Modal.Container>
       </Modal.Backdrop>

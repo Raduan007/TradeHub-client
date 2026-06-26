@@ -114,7 +114,7 @@ export default function BuyerDashboardPage() {
                   description="When you place an order, it will appear here with status updates."
                   actionLabel="Browse products"
                   onAction={() => {
-                    window.location.href = "/products";
+                    window.location.href = "/dashboard/buyer/products";
                   }}
                 />
               </div>
