@@ -192,7 +192,7 @@ export default function SignUpPage() {
       setForm(initialForm);
 
       setTimeout(() => {
-        router.push("/auth/signin");
+        router.push("/");
       }, 1500);
     } catch (err) {
       setError(

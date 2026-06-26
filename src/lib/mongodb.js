@@ -1,4 +1,7 @@
+import dns from "node:dns/promises";
 import { MongoClient } from "mongodb";
+
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const uri = process.env.MONGO_DB_URI;
 const dbName = process.env.AUTH_DB_NAME;
