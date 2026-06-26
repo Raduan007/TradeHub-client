@@ -2,6 +2,7 @@ import {
   FaBox,
   FaChartLine,
   FaCog,
+  FaCreditCard,
   FaEnvelope,
   FaFlag,
   FaHeart,
@@ -9,6 +10,7 @@ import {
   FaList,
   FaShoppingBag,
   FaStore,
+  FaUser,
   FaUsers,
 } from "react-icons/fa";
 
@@ -43,9 +45,14 @@ const buyerNav = [
     icon: FaHeart,
   },
   {
-    href: `${ROLE_DASHBOARD_PATHS[USER_ROLES.BUYER]}/messages`,
-    label: "Messages",
-    icon: FaEnvelope,
+    href: `${ROLE_DASHBOARD_PATHS[USER_ROLES.BUYER]}/payments`,
+    label: "Payments",
+    icon: FaCreditCard,
+  },
+  {
+    href: `${ROLE_DASHBOARD_PATHS[USER_ROLES.BUYER]}/profile`,
+    label: "Profile",
+    icon: FaUser,
   },
 ];
 
