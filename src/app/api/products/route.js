@@ -6,6 +6,21 @@ import { serializeDocuments } from "@/lib/serialize";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
+async function fetchFromExpress(query) {
+  const response = await fetch(`${API_URL}/api/products${query ? `?${query}` : ""}`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  return Array.isArray(data) ? data : null;
+}
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -13,13 +28,21 @@ export async function GET(request) {
     const search = searchParams.get("search") || "";
     const category = searchParams.get("category") || "";
     const sellerId = searchParams.get("sellerId") || "";
+    const query = searchParams.toString();
 
-    const products = await fetchProductsRaw({
+    let products = await fetchProductsRaw({
       limit: Number(limit),
       search,
       category,
       sellerId: sellerId || undefined,
     });
+
+    if (products.length === 0 && API_URL && !API_URL.includes("localhost")) {
+      const expressProducts = await fetchFromExpress(query);
+      if (expressProducts?.length) {
+        products = expressProducts;
+      }
+    }
 
     return NextResponse.json(serializeDocuments(products));
   } catch (error) {

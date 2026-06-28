@@ -1,12 +1,12 @@
 import { ObjectId } from "mongodb";
 
-import { getDb } from "@/lib/mongodb";
+import { getProductsDb } from "@/lib/mongodb";
 import { serializeDocument, serializeDocuments } from "@/lib/serialize";
 
 const PRODUCTS_COLLECTION = process.env.PRODUCTS_COLLECTION || "courses";
 
 async function getProductsCollection() {
-  const db = await getDb();
+  const db = await getProductsDb();
   return db.collection(PRODUCTS_COLLECTION);
 }
 
@@ -57,7 +57,7 @@ async function findProducts({ sellerId, limit = 24, search = "", category = "" }
 
   return collection
     .find(buildProductFilter({ sellerId, search, category }))
-    .sort({ createdAt: -1 })
+    .sort({ createdAt: -1, _id: -1 })
     .limit(cappedLimit)
     .toArray();
 }

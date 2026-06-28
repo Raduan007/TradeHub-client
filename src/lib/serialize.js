@@ -4,8 +4,10 @@ export function serializeDocument(document) {
   }
 
   const { _id, ...rest } = document;
+  const id = _id?.toString?.() ?? String(_id);
   const serialized = {
-    id: _id?.toString?.() ?? String(_id),
+    _id: id,
+    id,
   };
 
   for (const [key, value] of Object.entries(rest)) {
