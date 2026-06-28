@@ -7,7 +7,6 @@ import { Input, Skeleton } from "@heroui/react";
 import ProductCard from "@/components/ProductCard";
 import { normalizeProducts } from "@/lib/product-utils";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 const PAGE_SIZE = 8;
 
 const SORT_OPTIONS = [
@@ -33,7 +32,7 @@ export default function ProductsPage() {
       const params = new URLSearchParams({ limit: "100" });
       if (search) params.set("search", search);
 
-      const response = await fetch(`${API_URL}/api/products?${params}`);
+      const response = await fetch(`/api/products?${params}`);
       if (!response.ok) throw new Error("Failed to load products");
 
       const data = await response.json();

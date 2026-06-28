@@ -9,8 +9,6 @@ import { Alert, Button, Card, Chip, Skeleton, Spinner } from "@heroui/react";
 import { normalizeProduct } from "@/lib/product-utils";
 import { formatCurrency } from "@/lib/format";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-
 export default function ProductDetailsPage() {
   const params = useParams();
   const [product, setProduct] = useState(null);
@@ -24,7 +22,7 @@ export default function ProductDetailsPage() {
     setError("");
 
     try {
-      const response = await fetch(`${API_URL}/api/products/${params.id}`);
+      const response = await fetch(`/api/products/${params.id}`);
       if (!response.ok) throw new Error("Product not found");
       const data = await response.json();
       setProduct(normalizeProduct(data));

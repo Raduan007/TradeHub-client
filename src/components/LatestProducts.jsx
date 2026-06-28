@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaArrowRight, FaMapMarkerAlt, FaTag } from "react-icons/fa";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-
 function getProductValue(product, keys, fallback = "") {
   for (const key of keys) {
     if (product?.[key] !== undefined && product?.[key] !== null && product?.[key] !== "") {
@@ -73,7 +71,7 @@ export default function LatestProducts() {
 
 async function fetchProducts() {
       try {
-        const response = await fetch(`${API_URL}/products?limit=8`, {
+        const response = await fetch("/api/products?limit=8", {
           signal: controller.signal,
         });
 
@@ -146,7 +144,7 @@ async function fetchProducts() {
             <h3 className="text-lg font-bold mb-2">Products are not loading</h3>
             <p>{error}</p>
             <p className="text-sm mt-3 text-red-600 dark:text-red-200/80">
-              Make sure the backend is running at {API_URL}.
+              Please try again later.
             </p>
           </div>
         )}
