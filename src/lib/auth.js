@@ -13,8 +13,15 @@ import {
 
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
-const client = new MongoClient(process.env.MONGO_DB_URI);
-const db = client.db(process.env.AUTH_DB_NAME);
+const uri = process.env.MONGO_DB_URI || process.env.MONGODB_URI;
+const dbName = process.env.AUTH_DB_NAME || process.env.DB_NAME || "tradehubdb";
+
+if (!uri) {
+  throw new Error("Missing MONGO_DB_URI environment variable");
+}
+
+const client = new MongoClient(uri);
+const db = client.db(dbName);
 
 const trustedOrigins = [
   "http://localhost:3000",
@@ -26,6 +33,7 @@ const trustedOrigins = [
 ].filter((origin, index, list) => origin && list.indexOf(origin) === index);
 
 export const auth = betterAuth({
+  secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,
   trustedOrigins,
   emailAndPassword: {

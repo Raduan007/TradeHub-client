@@ -41,9 +41,7 @@ function loadEnvFile() {
         .trim()
         .replace(/^["']|["']$/g, "");
 
-      if (!process.env[key]) {
-        process.env[key] = value;
-      }
+      process.env[key] = value;
     }
   } catch {
     // .env is optional if variables are already exported
@@ -71,6 +69,56 @@ function parseArgs(argv) {
   return args;
 }
 
+function getUserIdMatchers(userId) {
+  const matchers = [userId];
+
+  if (userId instanceof ObjectId) {
+    matchers.push(userId.toString());
+  } else if (typeof userId === "string" && ObjectId.isValid(userId)) {
+    matchers.push(new ObjectId(userId));
+  }
+
+  return matchers;
+}
+
+async function verifyCredentialAccount(db, userId) {
+  const accounts = db.collection("account");
+  const credentialAccount = await accounts.findOne({
+    providerId: "credential",
+    userId: { $in: getUserIdMatchers(userId) },
+  });
+
+  if (!credentialAccount?.password) {
+    throw new Error("Credential account was not created correctly.");
+  }
+
+  const joinedAccounts = await db
+    .collection("user")
+    .aggregate([
+      { $match: { _id: userId } },
+      {
+        $lookup: {
+          from: "account",
+          localField: "_id",
+          foreignField: "userId",
+          as: "account",
+        },
+      },
+      { $limit: 1 },
+    ])
+    .toArray();
+
+  const linkedAccount = joinedAccounts[0]?.account?.find(
+    (account) => account.providerId === "credential"
+  );
+
+  if (!linkedAccount) {
+    throw new Error(
+      "Better Auth cannot link the admin account. Check account.userId type matches user._id."
+    );
+  }
+}
+
 loadEnvFile();
 
 const cliArgs = parseArgs(process.argv.slice(2));
@@ -82,11 +130,11 @@ const email = (
 const password = cliArgs.password || process.env.ADMIN_PASSWORD || "Admin@12345";
 const name = cliArgs.name || process.env.ADMIN_NAME || "TradeHub Admin";
 
-const uri = process.env.MONGO_DB_URI;
-const dbName = process.env.AUTH_DB_NAME;
+const uri = process.env.MONGO_DB_URI || process.env.MONGODB_URI;
+const dbName = process.env.AUTH_DB_NAME || process.env.DB_NAME || "tradehubdb";
 
-if (!uri || !dbName) {
-  console.error("Missing MONGO_DB_URI or AUTH_DB_NAME in .env");
+if (!uri) {
+  console.error("Missing MONGO_DB_URI in .env");
   process.exit(1);
 }
 
@@ -99,56 +147,16 @@ async function createAdmin() {
     const users = db.collection("user");
     const accounts = db.collection("account");
 
-    const existingUser = await users.findOne({ email });
+    const existingUser = await users.findOne({
+      email: { $regex: `^${email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
+    });
 
     if (existingUser) {
-      await users.updateOne(
-        { _id: existingUser._id },
-        {
-          $set: {
-            role: "admin",
-            status: "active",
-            updatedAt: new Date(),
-          },
-        }
-      );
-
-      const existingAccount = await accounts.findOne({
-        userId: existingUser._id,
-        providerId: "credential",
+      await accounts.deleteMany({
+        userId: { $in: getUserIdMatchers(existingUser._id) },
       });
-
-      if (existingAccount) {
-        const hashedPassword = await hashPassword(password);
-        await accounts.updateOne(
-          { _id: existingAccount._id },
-          {
-            $set: {
-              password: hashedPassword,
-              updatedAt: new Date(),
-            },
-          }
-        );
-      } else {
-        const userId = existingUser._id.toString();
-        const now = new Date();
-        const hashedPassword = await hashPassword(password);
-
-        await accounts.insertOne({
-          userId: existingUser._id,
-          providerId: "credential",
-          accountId: userId,
-          password: hashedPassword,
-          createdAt: now,
-          updatedAt: now,
-        });
-      }
-
-      console.log("Updated existing user to admin:");
-      console.log(`  Email:    ${email}`);
-      console.log(`  Password: ${password}`);
-      console.log(`  Login:    http://localhost:3000/auth/signin`);
-      return;
+      await users.deleteOne({ _id: existingUser._id });
+      console.log(`Removed existing admin records for ${email}`);
     }
 
     const userId = new ObjectId();
@@ -177,11 +185,15 @@ async function createAdmin() {
       updatedAt: now,
     });
 
-    console.log("Admin user created:");
+    await verifyCredentialAccount(db, userId);
+
+    console.log("Admin user created successfully:");
+    console.log(`  Database: ${dbName}`);
     console.log(`  Email:    ${email}`);
     console.log(`  Password: ${password}`);
-    console.log(`  Login:    http://localhost:3000/auth/signin`);
+    console.log(`  Login:    http://localhost:3000/login`);
     console.log(`  Dashboard: http://localhost:3000/dashboard/admin`);
+    console.log(`  Production login: https://trade-hub-client-pi.vercel.app/login`);
   } finally {
     await client.close();
   }
