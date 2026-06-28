@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
 import { Input, Skeleton } from "@heroui/react";
@@ -16,7 +16,23 @@ const SORT_OPTIONS = [
   { key: "price-desc", label: "Price: High to Low" },
 ];
 
-export default function ProductsPage() {
+function ProductsPageFallback() {
+  return (
+    <div className="mx-auto max-w-7xl space-y-8 px-6 py-10">
+      <div>
+        <Skeleton className="h-10 w-64 rounded-lg" />
+        <Skeleton className="mt-2 h-5 w-96 rounded-lg" />
+      </div>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <Skeleton key={i} className="h-80 rounded-xl" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProductsPageContent() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -168,5 +184,13 @@ export default function ProductsPage() {
         </>
       ) : null}
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductsPageFallback />}>
+      <ProductsPageContent />
+    </Suspense>
   );
 }
