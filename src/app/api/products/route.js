@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 
 import { fetchProductsRaw } from "@/lib/products";
+import { serializeDocuments } from "@/lib/serialize";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function GET(request) {
   try {
@@ -17,7 +21,7 @@ export async function GET(request) {
       sellerId: sellerId || undefined,
     });
 
-    return NextResponse.json(products);
+    return NextResponse.json(serializeDocuments(products));
   } catch (error) {
     console.error("GET /api/products failed:", error);
     return NextResponse.json(
