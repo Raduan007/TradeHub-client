@@ -144,9 +144,9 @@ const Footer = () => {
 
             <div className="flex flex-col gap-2">
               <Link href="/login">Sign In</Link>
-              <Link href="/register">Register</Link>
+              <Link href="/auth/signup">Register</Link>
               <Link href="/dashboard">Dashboard</Link>
-              <Link href="/orders">My Orders</Link>
+              <Link href="/login?callbackUrl=/dashboard/buyer/orders">My Orders</Link>
             </div>
           </div>
 
@@ -157,11 +157,11 @@ const Footer = () => {
             </h3>
 
             <div className="flex flex-col gap-2">
-              <Link href="/category/electronics">Electronics</Link>
-              <Link href="/category/furniture">Furniture</Link>
-              <Link href="/category/vehicles">Vehicles</Link>
-              <Link href="/category/fashion">Fashion</Link>
-              <Link href="/category/mobile">Mobile Phones</Link>
+              <Link href="/products?category=electronics">Electronics</Link>
+              <Link href="/products?category=furniture">Furniture</Link>
+              <Link href="/products?category=vehicles">Vehicles</Link>
+              <Link href="/products?category=fashion">Fashion</Link>
+              <Link href="/products?category=mobile">Mobile Phones</Link>
             </div>
           </div>
         </div>

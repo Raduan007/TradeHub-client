@@ -56,7 +56,7 @@ export default function HeroSection() {
                 <FaArrowRight size={18} />
               </Link>
               <Link
-                href="/sell"
+                href="/auth/signup"
                 className="inline-flex items-center justify-center border-2 border-gray-300 dark:border-gray-600 text-black dark:text-white px-8 py-3 rounded-lg font-semibold hover:border-blue-600 dark:hover:border-blue-500 transition transform hover:scale-105 hover:shadow-lg animate-slideInUp"
                 style={{ animationDelay: "0.5s" }}
               >

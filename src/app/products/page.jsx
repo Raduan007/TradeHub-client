@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
 import { Input, Skeleton } from "@heroui/react";
 
@@ -16,13 +17,24 @@ const SORT_OPTIONS = [
 ];
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    const categoryParam = searchParams.get("category") || "";
+    setCategory(categoryParam);
+    if (categoryParam) {
+      setSearch(categoryParam);
+      setSearchInput(categoryParam);
+    }
+  }, [searchParams]);
 
   const loadProducts = useCallback(async () => {
     setIsLoading(true);
@@ -31,6 +43,7 @@ export default function ProductsPage() {
     try {
       const params = new URLSearchParams({ limit: "100" });
       if (search) params.set("search", search);
+      if (category) params.set("category", category);
 
       const response = await fetch(`/api/products?${params}`);
       if (!response.ok) throw new Error("Failed to load products");
@@ -42,7 +55,7 @@ export default function ProductsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [search]);
+  }, [search, category]);
 
   useEffect(() => {
     loadProducts();

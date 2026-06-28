@@ -1,28 +1,28 @@
 import { NextResponse } from "next/server";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+import { fetchProductsRaw } from "@/lib/products";
 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.toString();
-    const response = await fetch(
-      `${API_URL}/api/products${query ? `?${query}` : ""}`,
-      { cache: "no-store" }
-    );
+    const limit = searchParams.get("limit") || "8";
+    const search = searchParams.get("search") || "";
+    const category = searchParams.get("category") || "";
+    const sellerId = searchParams.get("sellerId") || "";
 
-    const data = await response.json().catch(() => null);
+    const products = await fetchProductsRaw({
+      limit: Number(limit),
+      search,
+      category,
+      sellerId: sellerId || undefined,
+    });
 
-    if (!response.ok) {
-      return NextResponse.json(
-        data || { message: "Failed to fetch products" },
-        { status: response.status }
-      );
-    }
-
-    return NextResponse.json(data);
+    return NextResponse.json(products);
   } catch (error) {
     console.error("GET /api/products failed:", error);
-    return NextResponse.json({ message: "Failed to fetch products" }, { status: 500 });
+    return NextResponse.json(
+      { message: error.message || "Failed to fetch products" },
+      { status: 500 }
+    );
   }
 }

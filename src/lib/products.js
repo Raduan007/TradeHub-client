@@ -1,6 +1,41 @@
+import { ObjectId } from "mongodb";
+
+import { getDb } from "@/lib/mongodb";
 import { serializeDocument, serializeDocuments } from "@/lib/serialize";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const PRODUCTS_COLLECTION = process.env.PRODUCTS_COLLECTION || "courses";
+
+async function getProductsCollection() {
+  const db = await getDb();
+  return db.collection(PRODUCTS_COLLECTION);
+}
+
+function getProductFilter(id) {
+  return ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { _id: id };
+}
+
+function buildProductFilter({ sellerId, search = "", category = "" } = {}) {
+  const filter = {};
+
+  if (sellerId) {
+    filter.sellerId = sellerId;
+  }
+
+  if (category?.trim()) {
+    filter.category = { $regex: category.trim(), $options: "i" };
+  }
+
+  if (search?.trim()) {
+    const term = search.trim();
+    filter.$or = [
+      { name: { $regex: term, $options: "i" } },
+      { category: { $regex: term, $options: "i" } },
+      { brand: { $regex: term, $options: "i" } },
+    ];
+  }
+
+  return filter;
+}
 
 function normalizeProduct(product) {
   if (!product) {
@@ -16,88 +51,85 @@ function normalizeProduct(product) {
   };
 }
 
-export async function fetchProducts({ sellerId, limit = 24, search = "" } = {}) {
-  const params = new URLSearchParams();
+async function findProducts({ sellerId, limit = 24, search = "", category = "" } = {}) {
+  const collection = await getProductsCollection();
+  const cappedLimit = Math.min(Number(limit) || 24, 100);
 
-  if (limit) {
-    params.set("limit", String(limit));
-  }
+  return collection
+    .find(buildProductFilter({ sellerId, search, category }))
+    .sort({ createdAt: -1 })
+    .limit(cappedLimit)
+    .toArray();
+}
 
-  if (sellerId) {
-    params.set("sellerId", sellerId);
-  }
+export async function fetchProductsRaw({
+  sellerId,
+  limit = 24,
+  search = "",
+  category = "",
+} = {}) {
+  return findProducts({ sellerId, limit, search, category });
+}
 
-  if (search?.trim()) {
-    params.set("search", search.trim());
-  }
+export async function fetchProductRaw(productId) {
+  const collection = await getProductsCollection();
+  return collection.findOne(getProductFilter(productId));
+}
 
-  const query = params.toString();
-  const response = await fetch(
-    `${API_URL}/api/products${query ? `?${query}` : ""}`,
-    { cache: "no-store" }
-  );
-
-  if (!response.ok) {
-    const data = await response.json().catch(() => null);
-    throw new Error(data?.message || "Failed to fetch products");
-  }
-
-  const products = await response.json();
+export async function fetchProducts({
+  sellerId,
+  limit = 24,
+  search = "",
+  category = "",
+} = {}) {
+  const products = await findProducts({ sellerId, limit, search, category });
   return products.map(normalizeProduct);
 }
 
 export async function fetchProductById(productId) {
-  const response = await fetch(`${API_URL}/api/products/${productId}`, {
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    const data = await response.json().catch(() => null);
-    throw new Error(data?.message || "Failed to fetch product");
-  }
-
-  const product = await response.json();
+  const product = await fetchProductRaw(productId);
   return normalizeProduct(product);
 }
 
 export async function createProduct(productData) {
-  const response = await fetch(`${API_URL}/api/products`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(productData),
-  });
+  const collection = await getProductsCollection();
+  const product = {
+    ...productData,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const result = await collection.insertOne(product);
 
-  if (!response.ok) {
-    const data = await response.json().catch(() => null);
-    throw new Error(data?.message || "Failed to create product");
-  }
-
-  return normalizeProduct(await response.json());
+  return normalizeProduct({ ...product, _id: result.insertedId });
 }
 
 export async function updateProduct(productId, updates) {
-  const response = await fetch(`${API_URL}/api/products/${productId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updates),
-  });
+  const collection = await getProductsCollection();
+  const { _id, createdAt, ...safeUpdates } = updates;
+  const result = await collection.findOneAndUpdate(
+    getProductFilter(productId),
+    {
+      $set: {
+        ...safeUpdates,
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: "after" }
+  );
 
-  if (!response.ok) {
-    const data = await response.json().catch(() => null);
-    throw new Error(data?.message || "Failed to update product");
+  if (!result) {
+    throw new Error("Product not found");
   }
 
-  return normalizeProduct(await response.json());
+  return normalizeProduct(result);
 }
 
 export async function deleteProduct(productId) {
-  const response = await fetch(`${API_URL}/api/products/${productId}`, {
-    method: "DELETE",
-  });
+  const collection = await getProductsCollection();
+  const result = await collection.deleteOne(getProductFilter(productId));
 
-  if (!response.ok) {
-    const data = await response.json().catch(() => null);
-    throw new Error(data?.message || "Failed to delete product");
+  if (result.deletedCount === 0) {
+    throw new Error("Product not found");
   }
 
   return true;
