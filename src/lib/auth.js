@@ -112,3 +112,4 @@ export const auth = betterAuth({
     client,
   }),
 });
+ console.log('BetterAuth baseURL:', getBaseURL());
