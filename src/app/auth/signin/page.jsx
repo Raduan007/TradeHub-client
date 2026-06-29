@@ -50,16 +50,19 @@ export default function SignInPage() {
             "Failed to sign in with Google"
         );
         setGoogleLoading(false);
+        return;
       }
+
+      // Success – redirect to the URL provided by Better Auth (or fallback)
+      const redirect = response?.url || callbackUrl || "/";
+      router.push(redirect);
+      router.refresh();
+      setGoogleLoading(false);
     } catch (err) {
-      setError(
-        err?.message ||
-          "Something went wrong while signing in with Google"
-      );
+      setError(err?.message || "Something went wrong while signing in with Google");
       setGoogleLoading(false);
     }
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 

@@ -100,12 +100,15 @@ export default function SignUpPage() {
             "Failed to sign in with Google"
         );
         setGoogleLoading(false);
+        return;
       }
+
+      // Success – navigate to the callback URL (or home) and refresh session
+      router.push(callbackUrl || "/");
+      router.refresh();
+      setGoogleLoading(false);
     } catch (err) {
-      setError(
-        err?.message ||
-          "Something went wrong while signing in with Google"
-      );
+      setError(err?.message || "Something went wrong while signing in with Google");
       setGoogleLoading(false);
     }
   };
