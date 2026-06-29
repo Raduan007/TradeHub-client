@@ -100,11 +100,9 @@ export const auth = betterAuth({
           }
 
           return {
-            data: {
-              ...user,
-              role,
-              status: DEFAULT_USER_STATUS,
-            },
+            ...user,
+            role,
+            status: DEFAULT_USER_STATUS,
           };
         },
       },
