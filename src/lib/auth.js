@@ -83,17 +83,19 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user, ctx) => {
-          const requestedRole = ctx?.body?.role;
+          let requestedRole = ctx?.body?.role || ctx?.query?.role;
+          if (!requestedRole && ctx?.request?.url) {
+            try {
+              const url = new URL(ctx.request.url);
+              requestedRole = url.searchParams.get("role");
+            } catch (e) {
+              // ignore url parsing error
+            }
+          }
+
           let role = DEFAULT_USER_ROLE;
 
-          if (requestedRole) {
-            if (!ALLOWED_SIGNUP_ROLES.includes(requestedRole)) {
-              throw new APIError("BAD_REQUEST", {
-                message:
-                  "Invalid role selected. Only buyer or seller is allowed.",
-              });
-            }
-
+          if (requestedRole && ALLOWED_SIGNUP_ROLES.includes(requestedRole)) {
             role = requestedRole;
           }
 
@@ -112,4 +114,3 @@ export const auth = betterAuth({
     client,
   }),
 });
- console.log('BetterAuth baseURL:', getBaseURL());

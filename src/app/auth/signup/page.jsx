@@ -88,9 +88,13 @@ export default function SignUpPage() {
     setGoogleLoading(true);
 
     try {
+      const targetCallback = callbackUrl || "/";
+      const separator = targetCallback.includes("?") ? "&" : "?";
+      const finalCallback = `${targetCallback}${separator}role=${form.role}`;
+
       const response = await signIn.social({
         provider: "google",
-        callbackURL: callbackUrl || "/",
+        callbackURL: finalCallback,
       });
 
       if (response?.error) {
@@ -100,13 +104,7 @@ export default function SignUpPage() {
             "Failed to sign in with Google"
         );
         setGoogleLoading(false);
-        return;
       }
-
-      // Success – navigate to the callback URL (or home) and refresh session
-      router.push(callbackUrl || "/");
-      router.refresh();
-      setGoogleLoading(false);
     } catch (err) {
       setError(err?.message || "Something went wrong while signing in with Google");
       setGoogleLoading(false);
