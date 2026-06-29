@@ -100,16 +100,16 @@ export default function ProductDetailsPage() {
       </Link>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <Card className="overflow-hidden border border-slate-200 dark:border-slate-700">
-          <img src={product.image} alt={product.title} className="h-full max-h-[520px] w-full object-cover" />
+        <Card className="overflow-hidden border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg">
+          <img src={product.image} alt={product.title} className="h-full max-h-[520px] w-full object-cover transition-transform duration-500 hover:scale-[1.03]" />
         </Card>
 
         <div className="space-y-6">
           <div>
             <div className="mb-3 flex flex-wrap gap-2">
-              <Chip size="sm" color="primary" variant="soft">{product.category}</Chip>
-              <Chip size="sm" variant="secondary">{product.condition}</Chip>
-              <Chip size="sm" variant="secondary">{product.status}</Chip>
+              <Chip size="sm" color="primary" variant="flat">{product.category}</Chip>
+              <Chip size="sm" color="secondary" variant="flat">{product.condition}</Chip>
+              <Chip size="sm" color="success" variant="flat">{product.status}</Chip>
             </div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{product.title}</h1>
             <p className="mt-4 text-3xl font-bold text-blue-600">{formatCurrency(product.price)}</p>
@@ -133,7 +133,8 @@ export default function ProductDetailsPage() {
               </Button>
             </Link>
             <Button
-              variant="secondary"
+              color="danger"
+              variant="flat"
               className="flex-1"
               startContent={isSaving ? <Spinner size="sm" /> : <FaHeart />}
               onPress={handleAddToWishlist}

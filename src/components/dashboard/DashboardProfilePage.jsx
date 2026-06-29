@@ -129,7 +129,7 @@ export default function DashboardProfilePage({ apiPath, roleLabel }) {
                 <Chip size="sm" color="accent" variant="soft">
                   {profile.role}
                 </Chip>
-                <Chip size="sm" variant="secondary">
+                <Chip size="sm" color="success" variant="flat">
                   {profile.status}
                 </Chip>
               </div>
@@ -161,12 +161,12 @@ export default function DashboardProfilePage({ apiPath, roleLabel }) {
                 value={form.name}
                 onChange={handleChange}
                 variant="bordered"
-                isRequired
+                required
               />
               <Input
                 label="Email"
                 value={profile.email}
-                isReadOnly
+                readOnly
                 variant="bordered"
               />
               <Input

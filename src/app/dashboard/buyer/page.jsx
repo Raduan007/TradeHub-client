@@ -101,9 +101,9 @@ export default function BuyerDashboardPage() {
                 </p>
               </div>
 
-              <Link href="/dashboard/buyer/orders">
-                <Button variant="secondary">View all orders</Button>
-              </Link>
+              <Button as={Link} href="/dashboard/buyer/orders" color="secondary" variant="flat">
+                View all orders
+              </Button>
             </div>
 
             {overview.recentOrders.length === 0 ? (

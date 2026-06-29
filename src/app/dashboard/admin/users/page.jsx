@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { FaSearch, FaUsers } from "react-icons/fa";
+import { FaSearch, FaUserCheck, FaUserMinus, FaUserSlash, FaUsers } from "react-icons/fa";
 import { Button, Card, Chip, Input } from "@heroui/react";
 
 import BuyerEmptyState from "@/components/buyer/BuyerEmptyState";
@@ -73,7 +73,16 @@ export default function AdminUsersPage() {
       <BuyerPageHeader title="Manage Users" description="View, search, and control platform user accounts." />
 
       <div className="grid gap-4 md:grid-cols-[1fr_180px]">
-        <Input placeholder="Search users..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} startContent={<FaSearch className="text-slate-400" />} variant="bordered" />
+        <div className="relative">
+          <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none" />
+          <Input
+            placeholder="Search users..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            variant="bordered"
+            className="pl-8"
+          />
+        </div>
         <select
           value={role}
           onChange={(e) => {
@@ -101,7 +110,7 @@ export default function AdminUsersPage() {
         <>
           <div className="space-y-3">
             {users.map((user) => (
-              <Card key={user.id} className="border border-slate-200 p-5 dark:border-slate-700">
+              <Card key={user.id} className="border border-slate-200 p-5 dark:border-slate-700 transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <p className="font-semibold text-slate-900 dark:text-white">{user.name}</p>
@@ -113,11 +122,11 @@ export default function AdminUsersPage() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {user.status === "active" ? (
-                      <Button size="sm" color="warning" variant="flat" isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "suspended" })}>Suspend</Button>
+                      <Button size="sm" color="primary" variant="flat" startContent={<FaUserMinus />} isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "suspended" })}>Suspend</Button>
                     ) : (
-                      <Button size="sm" color="success" variant="flat" isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "active" })}>Activate</Button>
+                      <Button size="sm" color="success" variant="flat" startContent={<FaUserCheck />} isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "active" })}>Activate</Button>
                     )}
-                    <Button size="sm" color="danger" variant="flat" isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "banned" })}>Block</Button>
+                    <Button size="sm" color="danger" variant="flat" startContent={<FaUserSlash />} isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "banned" })}>Block</Button>
                   </div>
                 </div>
               </Card>
@@ -127,7 +136,8 @@ export default function AdminUsersPage() {
             <div className="flex items-center justify-center gap-4">
               <Button
                 size="sm"
-                variant="secondary"
+                color="primary"
+                variant="flat"
                 isDisabled={page <= 1}
                 onPress={() => setPage((current) => Math.max(1, current - 1))}
               >
@@ -138,7 +148,8 @@ export default function AdminUsersPage() {
               </span>
               <Button
                 size="sm"
-                variant="secondary"
+                color="primary"
+                variant="flat"
                 isDisabled={page >= pagination.totalPages}
                 onPress={() => setPage((current) => Math.min(pagination.totalPages, current + 1))}
               >

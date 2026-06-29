@@ -134,13 +134,16 @@ export default function BuyerOrdersPage() {
       />
 
       <Card className="border border-slate-200 p-4 dark:border-slate-700">
-        <Input
-          aria-label="Search orders"
-          placeholder="Search by order number or product..."
-          value={searchInput}
-          onChange={(event) => setSearchInput(event.target.value)}
-          startContent={<FaSearch className="text-slate-400" />}
-        />
+        <div className="relative">
+          <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none" />
+          <Input
+            aria-label="Search orders"
+            placeholder="Search by order number or product..."
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            className="pl-8"
+          />
+        </div>
       </Card>
 
       {isLoading ? <TableSkeleton rows={6} columns={5} /> : null}
@@ -167,7 +170,7 @@ export default function BuyerOrdersPage() {
 
       {!isLoading && !error && orders.length > 0 ? (
         <>
-          <Card className="overflow-hidden border border-slate-200 dark:border-slate-700">
+          <Card className="overflow-hidden border border-slate-200 dark:border-slate-700 card-anim">
             <div className="hidden overflow-x-auto md:block">
               <table className="min-w-full text-left text-sm">
                 <thead className="border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900/50">
@@ -224,7 +227,9 @@ export default function BuyerOrdersPage() {
                       <td className="px-5 py-4">
                         <Button
                           size="sm"
-                          variant="secondary"
+                          color="primary"
+                          variant="flat"
+                          className="action-btn"
                           onPress={() => handleViewOrder(order.id)}
                         >
                           View
@@ -240,7 +245,7 @@ export default function BuyerOrdersPage() {
               {orders.map((order) => (
                 <div
                   key={order.id}
-                  className="rounded-xl border border-slate-200 p-4 dark:border-slate-700"
+                  className="rounded-xl border border-slate-200 p-4 dark:border-slate-700 transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 card-anim"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -264,9 +269,10 @@ export default function BuyerOrdersPage() {
                   </div>
 
                   <Button
-                    className="mt-4 w-full"
+                    className="mt-4 w-full action-btn"
                     size="sm"
-                    variant="secondary"
+                    color="primary"
+                    variant="flat"
                     onPress={() => handleViewOrder(order.id)}
                   >
                     View details

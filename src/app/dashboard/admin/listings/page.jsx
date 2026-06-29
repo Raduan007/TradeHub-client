@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { FaSearch, FaStore, FaTrash } from "react-icons/fa";
+import { FaCheck, FaSearch, FaStore, FaTimes, FaTrash } from "react-icons/fa";
 import { Button, Card, Chip, Input, Spinner } from "@heroui/react";
 
 import BuyerEmptyState from "@/components/buyer/BuyerEmptyState";
@@ -78,7 +78,16 @@ export default function AdminListingsPage() {
   return (
     <div className="space-y-6">
       <BuyerPageHeader title="Manage Products" description="Approve, reject, and moderate all platform listings." />
-      <Input placeholder="Search products..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} startContent={<FaSearch className="text-slate-400" />} variant="bordered" />
+      <div className="relative">
+        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none" />
+        <Input
+          placeholder="Search products..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          variant="bordered"
+          className="pl-8"
+        />
+      </div>
 
       {isLoading ? <TableSkeleton rows={5} /> : null}
       {!isLoading && error ? <BuyerErrorState message={error} onRetry={loadListings} /> : null}
@@ -89,7 +98,7 @@ export default function AdminListingsPage() {
       {!isLoading && !error && listings.length > 0 ? (
         <div className="space-y-3">
           {listings.map((listing) => (
-            <Card key={listing.id} className="border border-slate-200 p-5 dark:border-slate-700">
+            <Card key={listing.id} className="border border-slate-200 p-5 dark:border-slate-700 transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">{listing.name || listing.title}</p>
@@ -97,8 +106,8 @@ export default function AdminListingsPage() {
                   <Chip size="sm" className="mt-2" variant="soft">{listing.status || "available"}</Chip>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" color="success" variant="flat" isLoading={updatingId === listing.id} onPress={() => updateListing(listing.id, { status: "available" })}>Approve</Button>
-                  <Button size="sm" color="warning" variant="flat" isLoading={updatingId === listing.id} onPress={() => updateListing(listing.id, { status: "rejected" })}>Reject</Button>
+                  <Button size="sm" color="success" variant="flat" startContent={updatingId === listing.id ? <Spinner size="sm" /> : <FaCheck />} isLoading={updatingId === listing.id} onPress={() => updateListing(listing.id, { status: "available" })}>Approve</Button>
+                  <Button size="sm" color="danger" variant="flat" startContent={updatingId === listing.id ? <Spinner size="sm" /> : <FaTimes />} isLoading={updatingId === listing.id} onPress={() => updateListing(listing.id, { status: "rejected" })}>Reject</Button>
                   <Button size="sm" color="danger" variant="flat" startContent={updatingId === listing.id ? <Spinner size="sm" /> : <FaTrash />} onPress={() => deleteListing(listing.id)}>Delete</Button>
                 </div>
               </div>

@@ -67,13 +67,16 @@ export default function SellerListingsPage() {
         </Link>
       </div>
 
-      <Input
-        placeholder="Search listings..."
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        startContent={<FaSearch className="text-slate-400" />}
-        variant="bordered"
-      />
+      <div className="relative">
+        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none" />
+        <Input
+          placeholder="Search listings..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          variant="bordered"
+          className="pl-8"
+        />
+      </div>
 
       {isLoading ? <TableSkeleton rows={5} /> : null}
       {!isLoading && error ? <BuyerErrorState message={error} onRetry={loadListings} /> : null}
@@ -85,7 +88,7 @@ export default function SellerListingsPage() {
       {!isLoading && !error && listings.length > 0 ? (
         <div className="grid gap-4">
           {listings.map((listing) => (
-            <Card key={listing.id} className="border border-slate-200 p-4 dark:border-slate-700">
+            <Card key={listing.id} className="border border-slate-200 p-4 dark:border-slate-700 transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-4">
                   <img src={listing.image || listing.images?.[0] || "/images/products/product1.jpg"} alt={listing.name || listing.title} className="h-16 w-16 rounded-lg object-cover" />
@@ -95,9 +98,7 @@ export default function SellerListingsPage() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Link href={`/dashboard/seller/listings/${listing.id}/edit`}>
-                    <Button variant="secondary" startContent={<FaEdit />}>Edit</Button>
-                  </Link>
+                  <Button as={Link} href={`/dashboard/seller/listings/${listing.id}/edit`} color="warning" variant="flat" startContent={<FaEdit />}>Edit</Button>
                   <Button color="danger" variant="flat" startContent={deletingId === listing.id ? <Spinner size="sm" /> : <FaTrash />} onPress={() => handleDelete(listing.id)} isDisabled={deletingId === listing.id}>
                     Delete
                   </Button>

@@ -6,7 +6,7 @@ export default function BuyerErrorState({ title, message, onRetry }) {
       <div className="space-y-3">
         <p>{message}</p>
         {onRetry ? (
-          <Button size="sm" variant="secondary" onPress={onRetry}>
+          <Button size="sm" color="danger" variant="bordered" onPress={onRetry}>
             Try again
           </Button>
         ) : null}

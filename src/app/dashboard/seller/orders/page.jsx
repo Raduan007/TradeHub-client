@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { FaBox, FaSearch } from "react-icons/fa";
+import { FaBox, FaCheckCircle, FaSearch, FaShippingFast } from "react-icons/fa";
 import { Button, Card, Input } from "@heroui/react";
 
 import BuyerEmptyState from "@/components/buyer/BuyerEmptyState";
@@ -72,7 +72,16 @@ export default function SellerOrdersPage() {
       <BuyerPageHeader title="Manage Orders" description="Accept, process, and update delivery status for customer orders." />
 
       <div className="grid gap-4 md:grid-cols-[1fr_220px]">
-        <Input placeholder="Search orders..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} startContent={<FaSearch className="text-slate-400" />} variant="bordered" />
+        <div className="relative">
+          <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none" />
+          <Input
+            placeholder="Search orders..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            variant="bordered"
+            className="pl-8"
+          />
+        </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
@@ -96,7 +105,7 @@ export default function SellerOrdersPage() {
       {!isLoading && !error && orders.length > 0 ? (
         <div className="space-y-4">
           {orders.map((order) => (
-            <Card key={order.id} className="border border-slate-200 p-5 dark:border-slate-700">
+            <Card key={order.id} className="border border-slate-200 p-5 dark:border-slate-700 transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">{order.productTitle}</p>
@@ -112,10 +121,10 @@ export default function SellerOrdersPage() {
                     </>
                   ) : null}
                   {order.status === "processing" ? (
-                    <Button size="sm" variant="secondary" isLoading={updatingId === order.id} onPress={() => updateStatus(order.id, "shipped")}>Mark Shipped</Button>
+                    <Button size="sm" color="primary" variant="flat" startContent={<FaShippingFast />} isLoading={updatingId === order.id} onPress={() => updateStatus(order.id, "shipped")}>Mark Shipped</Button>
                   ) : null}
                   {order.status === "shipped" ? (
-                    <Button size="sm" variant="secondary" isLoading={updatingId === order.id} onPress={() => updateStatus(order.id, "delivered")}>Mark Delivered</Button>
+                    <Button size="sm" color="success" variant="flat" startContent={<FaCheckCircle />} isLoading={updatingId === order.id} onPress={() => updateStatus(order.id, "delivered")}>Mark Delivered</Button>
                   ) : null}
                 </div>
               </div>

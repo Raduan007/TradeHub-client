@@ -1,0 +1,8 @@
+/* Utility classes for consistent button and card animations */
+.action-btn {
+  @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-lg;
+}
+
+.card-anim {
+  @apply transition-all duration-300 hover:scale-[1.01] hover:shadow-lg;
+}

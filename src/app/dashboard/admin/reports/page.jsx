@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { FaFlag } from "react-icons/fa";
+import { FaBan, FaCheck, FaEye, FaFlag } from "react-icons/fa";
 import { Button, Card, Chip } from "@heroui/react";
 
 import BuyerEmptyState from "@/components/buyer/BuyerEmptyState";
@@ -73,9 +73,9 @@ export default function AdminReportsPage() {
                   <Chip size="sm" className="mt-2" variant="soft">{REPORT_STATUS_LABELS[report.status] || report.status}</Chip>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="secondary" isLoading={updatingId === report.id} onPress={() => updateReport(report.id, "reviewing")}>Review</Button>
-                  <Button size="sm" color="success" variant="flat" isLoading={updatingId === report.id} onPress={() => updateReport(report.id, "resolved")}>Resolve</Button>
-                  <Button size="sm" color="danger" variant="flat" isLoading={updatingId === report.id} onPress={() => updateReport(report.id, "dismissed")}>Dismiss</Button>
+                  <Button size="sm" color="primary" variant="flat" startContent={<FaEye />} isLoading={updatingId === report.id} onPress={() => updateReport(report.id, "reviewing")}>Review</Button>
+                  <Button size="sm" color="success" variant="flat" startContent={<FaCheck />} isLoading={updatingId === report.id} onPress={() => updateReport(report.id, "resolved")}>Resolve</Button>
+                  <Button size="sm" color="danger" variant="flat" startContent={<FaBan />} isLoading={updatingId === report.id} onPress={() => updateReport(report.id, "dismissed")}>Dismiss</Button>
                 </div>
               </div>
             </Card>

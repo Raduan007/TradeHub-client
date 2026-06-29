@@ -6,7 +6,7 @@ import { FaMapMarkerAlt, FaTag } from "react-icons/fa";
 export default function ProductCard({ product }) {
   return (
     <Link href={`/products/${product.id}`}>
-      <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:border-blue-500/70 hover:shadow-2xl dark:border-white/10 dark:bg-white/5">
+      <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-500/70 hover:shadow-xl dark:border-white/10 dark:bg-white/5">
         <div className="relative h-52 overflow-hidden bg-gray-100 dark:bg-slate-900">
           <img
             src={product.image}

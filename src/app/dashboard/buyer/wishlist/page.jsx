@@ -114,7 +114,7 @@ export default function BuyerWishlistPage() {
           {items.map((item) => (
             <Card
               key={item.id}
-              className="overflow-hidden border border-slate-200 dark:border-slate-700"
+              className="overflow-hidden border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600"
             >
               <Link href={`/products/${item.productId}`}>
                 <img
@@ -138,15 +138,14 @@ export default function BuyerWishlistPage() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Link href={`/products/${item.productId}`} className="flex-1">
-                    <Button className="w-full" color="primary">
-                      View product
-                    </Button>
-                  </Link>
+                  <Button as={Link} href={`/products/${item.productId}`} className="flex-1 w-full" color="primary">
+                    View product
+                  </Button>
 
                   <Button
                     isIconOnly
-                    variant="secondary"
+                    color="danger"
+                    variant="flat"
                     aria-label="Remove from wishlist"
                     isDisabled={removingId === item.productId}
                     onPress={() => handleRemove(item.productId)}

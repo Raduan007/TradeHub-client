@@ -20,7 +20,9 @@ export default function CheckoutPage() {
         </p>
         <div className="mt-6 flex gap-3">
           <Button color="primary">Proceed to Payment</Button>
-          <Link href="/products"><Button variant="secondary">Cancel</Button></Link>
+          <Button as={Link} href="/products" color="danger" variant="flat">
+            Cancel
+          </Button>
         </div>
       </Card>
     </div>

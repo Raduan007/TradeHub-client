@@ -65,7 +65,16 @@ export default function BuyerProductsPage() {
   return (
     <div className="space-y-6">
       <BuyerPageHeader title="Browse Products" description="Discover second-hand items and save your favorites." />
-      <Input placeholder="Search products..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} startContent={<FaSearch className="text-slate-400" />} variant="bordered" />
+      <div className="relative">
+        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none" />
+        <Input
+          placeholder="Search products..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          variant="bordered"
+          className="pl-8"
+        />
+      </div>
 
       {isLoading ? <p className="text-slate-500">Loading products...</p> : null}
       {!isLoading && error ? <BuyerErrorState message={error} onRetry={loadProducts} /> : null}
@@ -79,10 +88,8 @@ export default function BuyerProductsPage() {
             <div key={product.id} className="space-y-3">
               <ProductCard product={product} />
               <div className="flex gap-2">
-                <Link href={`/products/${product.id}`} className="flex-1">
-                  <Button className="w-full" variant="secondary">View Details</Button>
-                </Link>
-                <Button variant="flat" startContent={wishlistId === product.id ? <Spinner size="sm" /> : <FaHeart />} onPress={() => handleWishlist(product)}>
+                <Button as={Link} href={`/products/${product.id}`} className="flex-1 w-full" color="primary" variant="flat">View Details</Button>
+                <Button color="danger" variant="flat" startContent={wishlistId === product.id ? <Spinner size="sm" /> : <FaHeart />} onPress={() => handleWishlist(product)}>
                   Save
                 </Button>
               </div>

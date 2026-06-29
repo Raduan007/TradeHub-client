@@ -146,7 +146,7 @@ export default function BuyerProfilePage() {
                 <Chip size="sm" color="accent" variant="soft">
                   {profile.role}
                 </Chip>
-                <Chip size="sm" variant="secondary">
+                <Chip size="sm" color="success" variant="flat">
                   {profile.status}
                 </Chip>
               </div>

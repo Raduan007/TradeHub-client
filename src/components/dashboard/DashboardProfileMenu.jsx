@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import {
   FaChevronDown,
-  FaCog,
+  FaHome,
   FaSignOutAlt,
   FaUser,
 } from "react-icons/fa";
@@ -70,8 +70,8 @@ export default function DashboardProfileMenu({ user }) {
               return;
             }
 
-            if (key === "settings") {
-              router.push(settingsPath);
+            if (key === "dashboard") {
+              router.push(`/dashboard/${role}`);
               return;
             }
 
@@ -85,9 +85,9 @@ export default function DashboardProfileMenu({ user }) {
             My Profile
           </Dropdown.Item>
 
-          <Dropdown.Item id="settings">
-            <FaCog className="text-sm" />
-            Settings
+          <Dropdown.Item id="dashboard">
+            <FaHome className="text-sm" />
+            Dashboard
           </Dropdown.Item>
 
           <Dropdown.Item id="sign-out" className="text-danger">
