@@ -11,7 +11,14 @@ import {
   DEFAULT_USER_STATUS,
 } from "./user-roles";
 
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
+// Only set custom DNS servers in local development environment if needed
+if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+  try {
+    dns.setServers(["8.8.8.8", "8.8.4.4"]);
+  } catch (e) {
+    // Ignore DNS override errors
+  }
+}
 
 const uri = process.env.MONGO_DB_URI || process.env.MONGODB_URI;
 const dbName = process.env.AUTH_DB_NAME || process.env.DB_NAME || "tradehubdb";
@@ -23,23 +30,34 @@ if (!uri) {
 const client = new MongoClient(uri);
 const db = client.db(dbName);
 
+const dynamicVercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null;
+
 const trustedOrigins = [
   "http://localhost:3000",
   "https://trade-hub-client-pi.vercel.app",
   "https://trade-hub-client-nine.vercel.app",
   process.env.BETTER_AUTH_URL,
+  process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
+  dynamicVercelUrl,
   ...(process.env.BETTER_AUTH_TRUSTED_ORIGINS?.split(",").map((origin) => origin.trim()) ||
     []),
 ].filter((origin, index, list) => origin && list.indexOf(origin) === index);
 
+function getBaseURL() {
+  if (process.env.BETTER_AUTH_URL) return process.env.BETTER_AUTH_URL;
+  if (process.env.NEXT_PUBLIC_BETTER_AUTH_URL) return process.env.NEXT_PUBLIC_BETTER_AUTH_URL;
+  if (dynamicVercelUrl) return dynamicVercelUrl;
+  return "http://localhost:3000";
+}
+
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: getBaseURL(),
   trustedOrigins,
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     },
   },
   emailAndPassword: {
