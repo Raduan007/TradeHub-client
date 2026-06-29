@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Alert } from "@heroui/react";
+import { FcGoogle } from "react-icons/fc";
 import {
   FaUser,
   FaEnvelope,
@@ -16,7 +17,7 @@ import {
   FaArrowRight,
 } from "react-icons/fa";
 
-import { signUp } from "@/lib/auth-client";
+import { signIn, signUp } from "@/lib/auth-client";
 import {
   ALLOWED_SIGNUP_ROLES,
   DEFAULT_USER_ROLE,
@@ -56,8 +57,16 @@ function PasswordHints({ password }) {
 
 export default function SignUpPage() {
   const router = useRouter();
+  const [callbackUrl, setCallbackUrl] = useState(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setCallbackUrl(params.get("callbackUrl"));
+  }, []);
+
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -71,6 +80,34 @@ export default function SignUpPage() {
     if (!isAllowedSignupRole(form.role)) return "Please select a valid role";
     const failed = RULES.find((r) => !r.test(form.password));
     return failed ? "Password needs: " + failed.label.toLowerCase() : "";
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setSuccess("");
+    setGoogleLoading(true);
+
+    try {
+      const response = await signIn.social({
+        provider: "google",
+        callbackURL: callbackUrl || "/",
+      });
+
+      if (response?.error) {
+        setError(
+          response.error.message ||
+            response.error.statusText ||
+            "Failed to sign in with Google"
+        );
+        setGoogleLoading(false);
+      }
+    } catch (err) {
+      setError(
+        err?.message ||
+          "Something went wrong while signing in with Google"
+      );
+      setGoogleLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -96,7 +133,7 @@ export default function SignUpPage() {
       }
       
       setSuccess("Account created! Redirecting...");
-      setTimeout(() => router.push("/"), 1500);
+      setTimeout(() => router.push(callbackUrl || "/"), 1500);
     } catch (err) { 
       setError(err?.message || "Something went wrong"); 
     } finally { 
@@ -182,6 +219,27 @@ export default function SignUpPage() {
         <div className="mt-6 text-center text-xs text-slate-600">
           Already have an account? <Link href="/auth/signin" className="text-blue-400 hover:underline">Sign In</Link>
         </div>
+
+        {/* Divider */}
+        <div className="relative my-6 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-white/10" />
+          </div>
+          <div className="relative bg-slate-950 px-3 text-xs uppercase text-slate-500 font-medium">
+            Or continue with
+          </div>
+        </div>
+
+        {/* Google Sign In */}
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={googleLoading || loading}
+          className="w-full py-3.5 px-4 rounded-xl bg-white/5 border border-white/10 text-white font-semibold flex items-center justify-center gap-2 hover:bg-white/10 active:scale-[0.98] transition-all disabled:opacity-70"
+        >
+          <FcGoogle className="text-xl shrink-0" />
+          <span>{googleLoading ? "Connecting to Google..." : "Continue with Google"}</span>
+        </button>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Alert, Button, Card, Input } from "@heroui/react";
+import { FcGoogle } from "react-icons/fc";
 
 import { signIn } from "@/lib/auth-client";
 
@@ -22,6 +23,7 @@ export default function SignInPage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (event) => {
@@ -31,6 +33,32 @@ export default function SignInPage() {
     }));
   };
 
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setGoogleLoading(true);
+
+    try {
+      const response = await signIn.social({
+        provider: "google",
+        callbackURL: callbackUrl || "/",
+      });
+
+      if (response?.error) {
+        setError(
+          response.error.message ||
+            response.error.statusText ||
+            "Failed to sign in with Google"
+        );
+        setGoogleLoading(false);
+      }
+    } catch (err) {
+      setError(
+        err?.message ||
+          "Something went wrong while signing in with Google"
+      );
+      setGoogleLoading(false);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -150,6 +178,30 @@ export default function SignInPage() {
             Create Account
           </Link>
         </div>
+
+        {/* Divider */}
+        <div className="relative my-6 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+          </div>
+          <div className="relative bg-white px-3 text-xs uppercase text-slate-400 dark:bg-slate-900 font-medium">
+            Or continue with
+          </div>
+        </div>
+
+        {/* Google Sign In */}
+        <Button
+          type="button"
+          variant="bordered"
+          size="lg"
+          className="w-full font-semibold border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center gap-2"
+          onClick={handleGoogleSignIn}
+          isLoading={googleLoading}
+          isDisabled={loading}
+        >
+          {!googleLoading && <FcGoogle className="text-xl shrink-0" />}
+          <span>Continue with Google</span>
+        </Button>
       </Card>
     </section>
   );
