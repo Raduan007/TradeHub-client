@@ -188,27 +188,27 @@ export default function CheckoutPage() {
           </p>
         </Card>
 
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-          <Button
-            as={Link}
-            href="/products"
-            color="primary"
-            variant="solid"
-            size="lg"
-            className="w-full font-semibold sm:w-auto"
-          >
-            Continue Shopping
-          </Button>
-          <Button
-            as={Link}
-            href="/dashboard/buyer/orders"
-            color="primary"
-            variant="flat"
-            size="lg"
-            className="w-full font-semibold sm:w-auto"
-          >
-            View My Orders
-          </Button>
+        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center w-full sm:w-auto">
+          <Link href="/products" className="w-full sm:w-auto">
+            <Button
+              color="primary"
+              variant="solid"
+              size="lg"
+              className="w-full font-semibold"
+            >
+              Continue Shopping
+            </Button>
+          </Link>
+          <Link href="/dashboard/buyer/orders" className="w-full sm:w-auto">
+            <Button
+              color="primary"
+              variant="flat"
+              size="lg"
+              className="w-full font-semibold"
+            >
+              View My Orders
+            </Button>
+          </Link>
         </div>
       </div>
     );
@@ -298,7 +298,6 @@ export default function CheckoutPage() {
                 variant="bordered"
                 value={paymentDetails.cardNumber}
                 onChange={(e) => handlePaymentChange("cardNumber", e.target.value)}
-                startContent={<FaCreditCard className="text-slate-400" />}
                 maxLength={19}
                 required
               />
@@ -310,7 +309,6 @@ export default function CheckoutPage() {
                   variant="bordered"
                   value={paymentDetails.expiry}
                   onChange={(e) => handlePaymentChange("expiry", e.target.value)}
-                  startContent={<FaCalendarAlt className="text-slate-400" />}
                   maxLength={5}
                   required
                 />

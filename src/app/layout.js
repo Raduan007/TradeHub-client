@@ -14,7 +14,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body>
+      <body suppressHydrationWarning={true}>
         <LayoutClient>
           {children}
         </LayoutClient>

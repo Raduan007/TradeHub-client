@@ -1,7 +1,13 @@
 import dns from "node:dns/promises";
 import { MongoClient, ServerApiVersion } from "mongodb";
 
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
+if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+  try {
+    dns.setServers(["8.8.8.8", "8.8.4.4"]);
+  } catch (e) {
+    // Ignore DNS override errors in production/vercel
+  }
+}
 
 const uri = process.env.MONGO_DB_URI || process.env.MONGODB_URI;
 const dbName = process.env.AUTH_DB_NAME || process.env.DB_NAME || "tradehubdb";
