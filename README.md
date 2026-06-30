@@ -22,7 +22,7 @@ TradeHub is a full-stack marketplace web application where users can register as
 # 🚀 Live URL
 
 > **Production:**  
-> https://your-live-url.vercel.app
+>https://trade-hub-client-pi.vercel.app/
 
 ---
 
