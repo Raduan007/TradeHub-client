@@ -16,7 +16,7 @@ export async function POST(request) {
     const authResult = await requireBuyerSession(request);
     if (authResult.error) {
       return authResult.error;
-  }
+    }
 
     const buyerId = authResult.buyerId;
     const buyerName = authResult.user.name || "";
@@ -51,15 +51,6 @@ export async function POST(request) {
     // Generate random transaction ID and Order ID
     const transactionId = "TXN-" + Math.floor(100000000 + Math.random() * 900000000);
     const orderNumber = "MR" + Math.random().toString(36).substring(2, 8).toUpperCase();
-
-    const authResult = await requireBuyerSession(request);
-    if (authResult.error) {
-      return authResult.error;
-  }
-
-    const buyerId = authResult.buyerId;
-    const buyerName = authResult.user.name || "";
-    const buyerEmail = authResult.user.email || "";
 
     const finalBuyerName = deliveryInfo.name || buyerName;
     const finalBuyerEmail = deliveryInfo.email || buyerEmail;
