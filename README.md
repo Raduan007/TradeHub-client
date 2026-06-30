@@ -2,7 +2,7 @@
 
 ### A Modern Online Marketplace for Buying & Selling Products
 
-[🌐 Live Demo](https://your-live-url.vercel.app)
+[🌐 Live Demo]https://trade-hub-client-pi.vercel.app
 
 </div>
 
