@@ -1,29 +1,37 @@
 "use client";
 
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Drawer, useOverlayState } from "@heroui/react";
 
 import { useSession } from "@/lib/auth-client";
+import { SIGN_IN_PATH } from "@/lib/route-protection";
 
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardTopBar from "./DashboardTopBar";
 
 export default function DashboardLayout({ children }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const sidebarState = useOverlayState();
   const { data: session, isPending } = useSession();
   const user = session?.user;
 
   const closeSidebar = () => sidebarState.close();
 
-  if (isPending) {
+  useEffect(() => {
+    if (!isPending && !user) {
+      const callbackUrl = encodeURIComponent(pathname || "/dashboard");
+      router.replace(`${SIGN_IN_PATH}?callbackUrl=${callbackUrl}`);
+    }
+  }, [isPending, user, pathname, router]);
+
+  if (isPending || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
       </div>
     );
-  }
-
-  if (!user) {
-    return null;
   }
 
   return (

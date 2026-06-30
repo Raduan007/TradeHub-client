@@ -2,15 +2,19 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { FaArrowLeft, FaHeart, FaShoppingCart } from "react-icons/fa";
 import { Alert, Button, Card, Chip, Skeleton, Spinner } from "@heroui/react";
 
+import { useSession } from "@/lib/auth-client";
 import { normalizeProduct } from "@/lib/product-utils";
 import { formatCurrency } from "@/lib/format";
+import { buildSignUpUrl } from "@/lib/route-protection";
 
 export default function ProductDetailsPage() {
   const params = useParams();
+  const router = useRouter();
+  const { data: session, isPending: isSessionPending } = useSession();
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -36,6 +40,17 @@ export default function ProductDetailsPage() {
   useEffect(() => {
     loadProduct();
   }, [loadProduct]);
+
+  const handleBuyNow = () => {
+    const checkoutUrl = `/checkout?productId=${product.id}`;
+
+    if (session?.user) {
+      router.push(checkoutUrl);
+      return;
+    }
+
+    router.push(buildSignUpUrl(checkoutUrl));
+  };
 
   const handleAddToWishlist = async () => {
     setIsSaving(true);
@@ -127,12 +142,16 @@ export default function ProductDetailsPage() {
           {actionMessage ? <Alert title={actionMessage} /> : null}
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link href={`/checkout?productId=${product.id}`} className="flex-1">
-              <Button color="primary" className="w-full">
-                <FaShoppingCart className="mr-2" />
-                Buy Now
-              </Button>
-            </Link>
+            <Button
+              color="primary"
+              className="flex-1 w-full"
+              onPress={handleBuyNow}
+              isDisabled={isSessionPending}
+              isLoading={isSessionPending}
+            >
+              <FaShoppingCart className="mr-2" />
+              Buy Now
+            </Button>
             <Button
               color="danger"
               variant="flat"

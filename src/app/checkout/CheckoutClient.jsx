@@ -15,10 +15,13 @@ import {
   FaShoppingBag,
 } from "react-icons/fa";
 import { formatCurrency } from "@/lib/format";
+import { useSession } from "@/lib/auth-client";
+import { buildSignUpUrl } from "@/lib/route-protection";
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { data: session, isPending: isSessionPending } = useSession();
   const productId = searchParams.get("productId") || "product010";
 
   const [loading, setLoading] = useState(false);
@@ -46,6 +49,25 @@ export default function CheckoutPage() {
 
   // Success details state
   const [successData, setSuccessData] = useState(null);
+
+  useEffect(() => {
+    if (isSessionPending) return;
+
+    if (!session?.user) {
+      const checkoutPath = `/checkout?productId=${productId}`;
+      router.replace(buildSignUpUrl(checkoutPath));
+    }
+  }, [isSessionPending, session, productId, router]);
+
+  useEffect(() => {
+    if (session?.user) {
+      setDeliveryInfo((prev) => ({
+        ...prev,
+        name: session.user.name || prev.name,
+        email: session.user.email || prev.email,
+      }));
+    }
+  }, [session]);
 
   // Fetch product info on load
   useEffect(() => {
@@ -99,7 +121,11 @@ export default function CheckoutPage() {
 
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
-        throw new Error(err.error || "Checkout failed");
+        if (response.status === 401 || response.status === 403) {
+          router.push(buildSignUpUrl(`/checkout?productId=${product.id}`));
+          return;
+        }
+        throw new Error(err.error || err.message || "Checkout failed");
       }
 
       const data = await response.json();
@@ -112,6 +138,15 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+
+  if (isSessionPending || !session?.user) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
+        <Spinner size="lg" color="primary" />
+        <p className="text-slate-500 font-medium animate-pulse">Checking your account...</p>
+      </div>
+    );
+  }
 
   if (fetchingProduct) {
     return (

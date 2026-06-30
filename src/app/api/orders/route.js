@@ -42,20 +42,14 @@ export async function POST(request) {
     const transactionId = "TXN-" + Math.floor(100000000 + Math.random() * 900000000);
     const orderNumber = "MR" + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    // buyer info (fallback demo)
-    let buyerId = "demo-buyer-1";
-    let buyerName = "Chris Wang";
-    let buyerEmail = "buyer1@resellhub.com";
-    try {
-      const authResult = await requireBuyerSession(request);
-      if (!authResult.error) {
-        buyerId = authResult.buyerId;
-        buyerName = authResult.user.name || buyerName;
-        buyerEmail = authResult.user.email || buyerEmail;
-      }
-    } catch (e) {
-      console.warn("Buyer session unavailable, using demo fallback:", e.message);
+    const authResult = await requireBuyerSession(request);
+    if (authResult.error) {
+      return authResult.error;
     }
+
+    const buyerId = authResult.buyerId;
+    const buyerName = authResult.user.name || "";
+    const buyerEmail = authResult.user.email || "";
 
     // final fields (allow overrides from deliveryInfo)
     const finalBuyerName = deliveryInfo.name || buyerName;

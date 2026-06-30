@@ -5,17 +5,16 @@ import {
   DASHBOARD_BASE,
   getDashboardPathForRole,
   getRequiredRoleFromPath,
-  isDashboardPath,
 } from "@/lib/dashboard-routes";
+import { buildSignInUrl, isProtectedPath } from "@/lib/route-protection";
 import { getUserRole } from "@/lib/user-roles";
 
-const LOGIN_PATH = "/login";
 const ACCESS_DENIED_PATH = "/access-denied";
 
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
-  if (!isDashboardPath(pathname)) {
+  if (!isProtectedPath(pathname)) {
     return NextResponse.next();
   }
 
@@ -24,9 +23,7 @@ export async function proxy(request) {
   });
 
   if (!session?.user) {
-    const loginUrl = new URL(LOGIN_PATH, request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(buildSignInUrl(request.url, pathname));
   }
 
   const userRole = getUserRole(session.user);

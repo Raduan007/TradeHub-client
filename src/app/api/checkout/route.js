@@ -13,6 +13,15 @@ export async function POST(request) {
     const productId = body.productId || "product010";
     const deliveryInfo = body.deliveryInfo || {};
 
+    const authResult = await requireBuyerSession(request);
+    if (authResult.error) {
+      return authResult.error;
+  }
+
+    const buyerId = authResult.buyerId;
+    const buyerName = authResult.user.name || "";
+    const buyerEmail = authResult.user.email || "";
+
     let product = null;
     if (productId && productId !== "product010") {
       try {
@@ -43,21 +52,14 @@ export async function POST(request) {
     const transactionId = "TXN-" + Math.floor(100000000 + Math.random() * 900000000);
     const orderNumber = "MR" + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    // Get current session or fallback
-    let buyerId = "demo-buyer-1";
-    let buyerName = "Chris Wang";
-    let buyerEmail = "buyer1@resellhub.com";
+    const authResult = await requireBuyerSession(request);
+    if (authResult.error) {
+      return authResult.error;
+  }
 
-    try {
-      const authResult = await requireBuyerSession(request);
-      if (!authResult.error) {
-        buyerId = authResult.buyerId;
-        buyerName = authResult.user.name || buyerName;
-        buyerEmail = authResult.user.email || buyerEmail;
-      }
-    } catch (e) {
-      console.warn("Could not get buyer session, using demo fallback:", e.message);
-    }
+    const buyerId = authResult.buyerId;
+    const buyerName = authResult.user.name || "";
+    const buyerEmail = authResult.user.email || "";
 
     const finalBuyerName = deliveryInfo.name || buyerName;
     const finalBuyerEmail = deliveryInfo.email || buyerEmail;
