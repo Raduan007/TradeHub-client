@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
-import { FaHeart, FaSearch, FaShoppingBag } from "react-icons/fa";
-import { Button, Input, Spinner } from "@heroui/react";
+import { FaSearch, FaShoppingBag } from "react-icons/fa";
+import { Input } from "@heroui/react";
+import { success as toastSuccess, error as toastError, info as toastInfo } from "@/lib/toast";
 
 import BuyerEmptyState from "@/components/buyer/BuyerEmptyState";
 import BuyerErrorState from "@/components/buyer/BuyerErrorState";
@@ -47,7 +47,7 @@ export default function BuyerProductsPage() {
   const handleWishlist = async (product) => {
     setWishlistId(product.id);
     try {
-      await fetch("/api/buyer/wishlist", {
+      const response = await fetch("/api/buyer/wishlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -57,6 +57,31 @@ export default function BuyerProductsPage() {
           productPrice: product.price,
         }),
       });
+
+      if (response.status === 401) {
+        toastError("Please sign in to save items to your wishlist.");
+        return;
+      }
+
+      if (response.status === 403) {
+        toastError("Only buyer accounts can save items to a wishlist.");
+        return;
+      }
+
+      if (response.status === 201) {
+        toastSuccess(`"${product.title}" added to your wishlist! ❤️`);
+        return;
+      }
+
+      if (response.status === 200) {
+        toastInfo(`"${product.title}" is already in your wishlist.`);
+        return;
+      }
+
+      const data = await response.json().catch(() => null);
+      toastError(data?.message || "Failed to save to wishlist. Please try again.");
+    } catch (err) {
+      toastError("Network error. Please check your connection and try again.");
     } finally {
       setWishlistId(null);
     }
@@ -85,15 +110,12 @@ export default function BuyerProductsPage() {
       {!isLoading && !error && products.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {products.map((product) => (
-            <div key={product.id} className="space-y-3">
-              <ProductCard product={product} />
-              <div className="flex gap-2">
-                <Button as={Link} href={`/products/${product.id}`} className="flex-1 w-full" color="primary" variant="flat">View Details</Button>
-                <Button color="danger" variant="flat" startContent={wishlistId === product.id ? <Spinner size="sm" /> : <FaHeart />} onPress={() => handleWishlist(product)}>
-                  Save
-                </Button>
-              </div>
-            </div>
+            <ProductCard
+              key={product.id}
+              product={product}
+              onWishlist={handleWishlist}
+              wishlistLoading={wishlistId === product.id}
+            />
           ))}
         </div>
       ) : null}

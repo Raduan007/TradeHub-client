@@ -122,11 +122,35 @@ export default function AdminUsersPage() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {user.status === "active" ? (
-                      <Button size="sm" color="primary" variant="flat" isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "suspended" })}><FaUserMinus className="mr-2 text-slate-400" />Suspend</Button>
+                      <Button
+                        size="sm"
+                        isLoading={updatingId === user.id}
+                        onPress={() => updateUser(user.id, { status: "suspended" })}
+                        className="bg-transparent border border-amber-500 text-amber-500 hover:bg-amber-500/10 font-semibold"
+                        startContent={<FaUserMinus />}
+                      >
+                        Suspend
+                      </Button>
                     ) : (
-                      <Button size="sm" color="success" variant="flat" isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "active" })}><FaUserCheck className="mr-2 text-slate-400" />Activate</Button>
+                      <Button
+                        size="sm"
+                        isLoading={updatingId === user.id}
+                        onPress={() => updateUser(user.id, { status: "active" })}
+                        className="bg-transparent border border-emerald-500 text-emerald-500 hover:bg-emerald-500/10 font-semibold"
+                        startContent={<FaUserCheck />}
+                      >
+                        Activate
+                      </Button>
                     )}
-                    <Button size="sm" color="danger" variant="flat" startContent={<FaUserSlash />} isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "banned" })}>Block</Button>
+                    <Button
+                      size="sm"
+                      isLoading={updatingId === user.id}
+                      onPress={() => updateUser(user.id, { status: "banned" })}
+                      className="bg-transparent border border-red-500 text-red-500 hover:bg-red-500/10 font-semibold"
+                      startContent={<FaUserSlash />}
+                    >
+                      Block
+                    </Button>
                   </div>
                 </div>
               </Card>

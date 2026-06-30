@@ -9,6 +9,10 @@ import { Toaster } from "react-hot-toast"; // Toast provider
 export const metadata = {
   title: "TradeHub",
   description: "Buy and sell products on TradeHub",
+  icons: {
+    icon: "/images/company.png",
+    apple: "/images/company.png",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -19,7 +23,7 @@ export default function RootLayout({ children }) {
           {children}
         </LayoutClient>
         <Toaster
-          position="top-right"
+          position="down-right"
           toastOptions={{
             style: {
               background: "hsl(var(--toast-bg, #333))",

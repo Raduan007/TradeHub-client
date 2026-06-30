@@ -85,6 +85,9 @@ export default function BuyerPaymentsPage() {
                     Amount
                   </th>
                   <th className="px-5 py-3 font-semibold text-slate-600 dark:text-slate-300">
+                    Method
+                  </th>
+                  <th className="px-5 py-3 font-semibold text-slate-600 dark:text-slate-300">
                     Status
                   </th>
                   <th className="px-5 py-3 font-semibold text-slate-600 dark:text-slate-300">
@@ -93,25 +96,37 @@ export default function BuyerPaymentsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {payments.map((payment) => (
-                  <tr key={payment.id}>
-                    <td className="px-5 py-4 font-mono text-xs text-slate-900 dark:text-white sm:text-sm">
-                      {payment.transactionId}
-                    </td>
-                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
-                      {payment.orderNumber ? `#${payment.orderNumber}` : "—"}
-                    </td>
-                    <td className="px-5 py-4 font-semibold text-slate-900 dark:text-white">
-                      {formatCurrency(payment.amount)}
-                    </td>
-                    <td className="px-5 py-4">
-                      <PaymentStatusBadge status={payment.status} />
-                    </td>
-                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
-                      {formatDateTime(payment.createdAt)}
-                    </td>
-                  </tr>
-                ))}
+                  {payments.map((payment) => (
+                    <tr key={payment.id}>
+                      <td className="px-5 py-4 font-mono text-xs text-slate-900 dark:text-white sm:text-sm">
+                        {payment.transactionId}
+                      </td>
+                      <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
+                        {payment.orderNumber ? `#${payment.orderNumber}` : "—"}
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-slate-900 dark:text-white">
+                        {formatCurrency(payment.amount)}
+                      </td>
+                      <td className="px-5 py-4">
+                        {(() => {
+                          const method = (payment.method || payment.paymentMethod || "").toLowerCase();
+                          if (method === "cash") {
+                            return <span className="inline-flex items-center rounded-full border border-emerald-500 bg-transparent px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">💵 Cash</span>;
+                          } else if (method === "card" || method === "stripe") {
+                            return <span className="inline-flex items-center rounded-full border border-blue-500 bg-transparent px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">💳 Card</span>;
+                          } else {
+                            return <span className="inline-flex items-center rounded-full border border-slate-400 bg-transparent px-3 py-1 text-xs font-semibold text-slate-500 dark:text-slate-400">{method || "—"}</span>;
+                          }
+                        })()}
+                      </td>
+                      <td className="px-5 py-4">
+                        <PaymentStatusBadge status={payment.status} />
+                      </td>
+                      <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
+                        {formatDateTime(payment.createdAt)}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -140,9 +155,22 @@ export default function BuyerPaymentsPage() {
                   <span className="text-lg font-bold text-slate-900 dark:text-white">
                     {formatCurrency(payment.amount)}
                   </span>
-                  <span className="text-sm text-slate-500 dark:text-slate-400">
-                    {formatDateTime(payment.createdAt)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {(() => {
+                      const method = (payment.method || payment.paymentMethod || "").toLowerCase();
+                      if (method === "cash") {
+                        return <span className="inline-flex items-center rounded-full border border-emerald-500 bg-transparent px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">💵 Cash</span>;
+                      } else if (method === "card" || method === "stripe") {
+                        return <span className="inline-flex items-center rounded-full border border-blue-500 bg-transparent px-2 py-0.5 text-xs font-semibold text-blue-600 dark:text-blue-400">💳 Card</span>;
+                      } else if (method) {
+                        return <span className="inline-flex items-center rounded-full border border-slate-400 bg-transparent px-2 py-0.5 text-xs font-semibold text-slate-500">{method}</span>;
+                      }
+                      return null;
+                    })()}
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                      {formatDateTime(payment.createdAt)}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}

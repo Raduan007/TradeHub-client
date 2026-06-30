@@ -72,21 +72,25 @@ export default function BuyerDashboardPage() {
               label="Total Orders"
               value={overview.totalOrders}
               icon={FaBox}
+              iconColorClass="bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400"
             />
             <BuyerStatCard
               label="Wishlist Items"
               value={overview.wishlistItems}
               icon={FaHeart}
+              iconColorClass="bg-rose-50 text-rose-500 dark:bg-rose-950/40 dark:text-rose-400"
             />
             <BuyerStatCard
               label="Total Payments"
               value={formatCurrency(overview.totalPayments)}
               icon={FaCreditCard}
+              iconColorClass="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
             />
             <BuyerStatCard
               label="Recent Orders"
               value={overview.recentOrders.length}
               icon={FaShoppingBag}
+              iconColorClass="bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-400"
             />
           </div>
 
@@ -101,7 +105,11 @@ export default function BuyerDashboardPage() {
                 </p>
               </div>
 
-              <Button as={Link} href="/dashboard/buyer/orders" color="secondary" variant="flat">
+              <Button
+                as={Link}
+                href="/dashboard/buyer/orders"
+                className="bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-500/10 font-semibold"
+              >
                 View all orders
               </Button>
             </div>

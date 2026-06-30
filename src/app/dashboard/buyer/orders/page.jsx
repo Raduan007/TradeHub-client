@@ -227,9 +227,7 @@ export default function BuyerOrdersPage() {
                       <td className="px-5 py-4">
                         <Button
                           size="sm"
-                          color="primary"
-                          variant="flat"
-                          className="action-btn"
+                          className="bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-500/10 font-semibold action-btn"
                           onPress={() => handleViewOrder(order.id)}
                         >
                           View
@@ -269,10 +267,8 @@ export default function BuyerOrdersPage() {
                   </div>
 
                   <Button
-                    className="mt-4 w-full action-btn"
+                    className="mt-4 w-full bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-500/10 font-semibold action-btn"
                     size="sm"
-                    color="primary"
-                    variant="flat"
                     onPress={() => handleViewOrder(order.id)}
                   >
                     View details
