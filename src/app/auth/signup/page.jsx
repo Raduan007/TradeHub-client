@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa";
 
 import { signIn, signUp } from "@/lib/auth-client";
+import { toast } from "@heroui/react";
 import {
   ALLOWED_SIGNUP_ROLES,
   DEFAULT_USER_ROLE,
@@ -140,8 +141,8 @@ export default function SignUpPage() {
         return; 
       }
       
-      setSuccess("Account created! Redirecting...");
-      setTimeout(() => router.push(callbackUrl || "/"), 1500);
+      toast.success("Account created! Redirecting...");
+router.push(callbackUrl || "/");
     } catch (err) { 
       setError(err?.message || "Something went wrong"); 
     } finally { 

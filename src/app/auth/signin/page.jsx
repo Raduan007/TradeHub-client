@@ -8,6 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { ALLOWED_SIGNUP_ROLES } from "@/lib/user-roles";
 
 import { signIn } from "@/lib/auth-client";
+import { toast } from "@heroui/react";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -84,9 +85,11 @@ export default function SignInPage() {
             response.error.statusText ||
             "Invalid email or password"
         );
+        toast.error(response.error.message || response.error.statusText || "Invalid email or password");
         return;
       }
 
+      toast.success("Signed in successfully!");
       router.push(callbackUrl || "/");
       router.refresh();
     } catch (err) {

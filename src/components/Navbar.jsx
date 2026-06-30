@@ -100,30 +100,6 @@ export default function Navbar() {
               </>
             ) : (
               <div className="relative flex items-center gap-5">
-                <button className="text-white relative" type="button">
-                  <FaBell
-                    size={20}
-                    className="hover:text-blue-500 transition"
-                  />
-
-                  <span
-                    className="
-                      absolute
-                      -top-2
-                      -right-2
-                      bg-red-500
-                      w-4
-                      h-4
-                      rounded-full
-                      text-[10px]
-                      flex
-                      items-center
-                      justify-center
-                    "
-                  >
-                    2
-                  </span>
-                </button>
 
                 <button
                   type="button"

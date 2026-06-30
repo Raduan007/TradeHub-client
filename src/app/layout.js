@@ -4,6 +4,7 @@ import "@fontsource/inter/600.css";
 import "@fontsource/inter/700.css";
 import "./globals.css";
 import LayoutClient from "./LayoutClient";
+import { Toaster } from "react-hot-toast"; // Toast provider
 
 export const metadata = {
   title: "TradeHub",
@@ -17,6 +18,15 @@ export default function RootLayout({ children }) {
         <LayoutClient>
           {children}
         </LayoutClient>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: "hsl(var(--toast-bg, #333))",
+              color: "hsl(var(--toast-fg, #fff))",
+            },
+          }}
+        />
       </body>
     </html>
   );

@@ -43,7 +43,7 @@ export default function ContactPage() {
           name="name"
           value={form.name}
           onChange={handleChange}
-          isRequired
+          required
           variant="bordered"
         />
         <Input
@@ -52,7 +52,7 @@ export default function ContactPage() {
           type="email"
           value={form.email}
           onChange={handleChange}
-          isRequired
+          required
           variant="bordered"
         />
         <TextArea
@@ -60,9 +60,9 @@ export default function ContactPage() {
           name="message"
           value={form.message}
           onChange={handleChange}
-          isRequired
+          required
           variant="bordered"
-          minRows={5}
+          rows={5}
         />
         <Button type="submit" color="primary">
           Send Message

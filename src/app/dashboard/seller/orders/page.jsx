@@ -121,7 +121,7 @@ export default function SellerOrdersPage() {
                     </>
                   ) : null}
                   {order.status === "processing" ? (
-                    <Button size="sm" color="primary" variant="flat" startContent={<FaShippingFast />} isLoading={updatingId === order.id} onPress={() => updateStatus(order.id, "shipped")}>Mark Shipped</Button>
+                    <Button size="sm" color="primary" variant="flat" isLoading={updatingId === order.id} onPress={() => updateStatus(order.id, "shipped")}><FaShippingFast className="mr-2 text-slate-400" />Mark Shipped</Button>
                   ) : null}
                   {order.status === "shipped" ? (
                     <Button size="sm" color="success" variant="flat" startContent={<FaCheckCircle />} isLoading={updatingId === order.id} onPress={() => updateStatus(order.id, "delivered")}>Mark Delivered</Button>

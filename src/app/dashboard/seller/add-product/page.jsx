@@ -32,6 +32,7 @@ import {
 } from "react-icons/fa";
 
 import { formatCurrency } from "@/lib/format";
+import { toast } from "@heroui/react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
@@ -177,12 +178,15 @@ export default function AddProductPage() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || "Failed to add product");
+        const message = errorData?.message || "Failed to add product";
+        throw new Error(message);
       }
 
       setIsSuccess(true);
+      toast.success('Product added successfully!');
     } catch (err) {
       setApiError(err.message || "An error occurred while adding the product.");
+      toast.error(err.message || "Failed to add product");
     } finally {
       setIsLoading(false);
     }
@@ -324,7 +328,7 @@ export default function AddProductPage() {
                   onChange={handleChange}
                   placeholder="e.g. Apple"
                   variant="bordered"
-                  startContent={<FaBox className="text-slate-400" />}
+
                 />
                 <FieldError className="text-xs text-red-500 mt-1">{errors.brand}</FieldError>
               </TextField>
@@ -355,7 +359,6 @@ export default function AddProductPage() {
                 onChange={handleChange}
                 placeholder="https://example.com/image.jpg"
                 variant="bordered"
-                startContent={<FaImage className="text-slate-400" />}
               />
               <Description className="text-[11px] text-slate-500 mt-0.5">Provide an absolute web address to the product image.</Description>
               <FieldError className="text-xs text-red-500 mt-1">{errors.image}</FieldError>
@@ -374,7 +377,7 @@ export default function AddProductPage() {
                   onChange={handleChange}
                   placeholder="0.00"
                   variant="bordered"
-                  startContent={<FaDollarSign className="text-slate-400" />}
+
                 />
                 <FieldError className="text-xs text-red-500 mt-1">{errors.price}</FieldError>
               </TextField>
@@ -390,7 +393,7 @@ export default function AddProductPage() {
                   onChange={handleChange}
                   placeholder="1"
                   variant="bordered"
-                  startContent={<FaWarehouse className="text-slate-400" />}
+
                 />
                 <FieldError className="text-xs text-red-500 mt-1">{errors.stock}</FieldError>
               </TextField>
@@ -405,7 +408,7 @@ export default function AddProductPage() {
                 onChange={handleChange}
                 placeholder="Provide a detailed description of the item..."
                 variant="bordered"
-                minRows={4}
+                rows={4}
               />
               <FieldError className="text-xs text-red-500 mt-1">{errors.description}</FieldError>
             </TextField>

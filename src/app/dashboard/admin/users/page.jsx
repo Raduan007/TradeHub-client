@@ -122,9 +122,9 @@ export default function AdminUsersPage() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {user.status === "active" ? (
-                      <Button size="sm" color="primary" variant="flat" startContent={<FaUserMinus />} isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "suspended" })}>Suspend</Button>
+                      <Button size="sm" color="primary" variant="flat" isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "suspended" })}><FaUserMinus className="mr-2 text-slate-400" />Suspend</Button>
                     ) : (
-                      <Button size="sm" color="success" variant="flat" startContent={<FaUserCheck />} isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "active" })}>Activate</Button>
+                      <Button size="sm" color="success" variant="flat" isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "active" })}><FaUserCheck className="mr-2 text-slate-400" />Activate</Button>
                     )}
                     <Button size="sm" color="danger" variant="flat" startContent={<FaUserSlash />} isLoading={updatingId === user.id} onPress={() => updateUser(user.id, { status: "banned" })}>Block</Button>
                   </div>
