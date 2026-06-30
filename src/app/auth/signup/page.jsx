@@ -62,6 +62,10 @@ export default function SignUpPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setCallbackUrl(params.get("callbackUrl"));
+    const roleParam = params.get("role");
+    if (roleParam && ALLOWED_SIGNUP_ROLES.includes(roleParam)) {
+      setForm((cur) => ({ ...cur, role: roleParam }));
+    }
   }, []);
 
   const [form, setForm] = useState(initialForm);
@@ -92,9 +96,12 @@ export default function SignUpPage() {
       const separator = targetCallback.includes("?") ? "&" : "?";
       const finalCallback = `${targetCallback}${separator}role=${form.role}`;
 
+      // Store selected role in a cookie so the server can retrieve it after OAuth redirect
+      document.cookie = `auth_role=${encodeURIComponent(form.role)}; path=/; max-age=300`;
       const response = await signIn.social({
         provider: "google",
         callbackURL: finalCallback,
+
       });
 
       if (response?.error) {

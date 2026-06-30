@@ -51,26 +51,43 @@ function getBaseURL() {
 }
 
 export const auth = betterAuth({
+  // Secret for signing JWTs and cookies
   secret: process.env.BETTER_AUTH_SECRET,
+  // Base URL controls the OAuth callback URIs. In development it resolves to http://localhost:3000,
+  // in production to the Vercel URL via BETTER_AUTH_URL env var.
   baseURL: getBaseURL(),
   trustedOrigins,
+  // Configure the Google provider
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     },
   },
+  // Enable email/password flow (unchanged)
   emailAndPassword: {
     enabled: true,
+  },
+  // Advanced cookie settings – secure defaults for production, lax for localhost.
+  advanced: {
+    cookieOptions: {
+      httpOnly: true,
+      // `secure` must be true for HTTPS (production) but false for localhost HTTP.
+      secure: process.env.NODE_ENV === "production",
+      // SameSite must be 'none' for cross‑site OAuth redirects in production (HTTPS).
+      // For localhost we keep 'lax' to avoid requiring HTTPS.
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    },
   },
   user: {
     additionalFields: {
       role: {
-  type: "string",
-  required: false,
-  defaultValue: DEFAULT_USER_ROLE,
-  input: false,
-},
+        type: "string",
+        required: false,
+        defaultValue: DEFAULT_USER_ROLE,
+        // Allow role to be set from request body or query
+        input: true,
+      },
       status: {
         type: "string",
         required: false,
@@ -84,6 +101,8 @@ export const auth = betterAuth({
       create: {
         before: async (user, ctx) => {
           let requestedRole = ctx?.body?.role || ctx?.query?.role;
+
+
           if (!requestedRole && ctx?.request?.url) {
             try {
               const url = new URL(ctx.request.url);
@@ -99,6 +118,7 @@ export const auth = betterAuth({
             role = requestedRole;
           }
 
+
           return {
             ...user,
             role,
@@ -108,6 +128,7 @@ export const auth = betterAuth({
       },
     },
   },
+  // Attach MongoDB adapter for user storage
   database: mongodbAdapter(db, {
     client,
   }),

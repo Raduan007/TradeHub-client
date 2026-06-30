@@ -5,16 +5,21 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Alert, Button, Card, Input } from "@heroui/react";
 import { FcGoogle } from "react-icons/fc";
+import { ALLOWED_SIGNUP_ROLES } from "@/lib/user-roles";
 
 import { signIn } from "@/lib/auth-client";
 
 export default function SignInPage() {
   const router = useRouter();
   const [callbackUrl, setCallbackUrl] = useState(null);
-
+  const [role, setRole] = useState(null);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setCallbackUrl(params.get("callbackUrl"));
+    const roleParam = params.get("role");
+    if (roleParam && ALLOWED_SIGNUP_ROLES.includes(roleParam)) {
+      setRole(roleParam);
+    }
   }, []);
 
   const [form, setForm] = useState({
@@ -38,9 +43,14 @@ export default function SignInPage() {
     setGoogleLoading(true);
 
     try {
-      const response = await signIn.social({
+      let finalCallback = callbackUrl || "/";
+    if (role) {
+      const separator = finalCallback.includes("?") ? "&" : "?";
+      finalCallback = `${finalCallback}${separator}role=${role}`;
+    }
+    const response = await signIn.social({
         provider: "google",
-        callbackURL: callbackUrl || "/",
+        callbackURL: finalCallback,
       });
 
       if (response?.error) {
