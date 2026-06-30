@@ -1,36 +1,113 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🛍️ TradeHub
 
-## Getting Started
+### A Modern Online Marketplace for Buying & Selling Products
 
-First, run the development server:
+[🌐 Live Demo](https://your-live-url.vercel.app)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+</div>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+# 📖 Project Purpose
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+TradeHub is a full-stack marketplace web application where users can register as **Buyers** or **Sellers**.
 
-## Learn More
+- 🛒 Buyers can browse products, add items to their wishlist, place orders, and manage purchases.
+- 🏪 Sellers can add, edit, update, and manage their product listings through a dedicated dashboard.
+- 🔐 Secure authentication is provided using Better Auth with Email/Password and Google OAuth.
+- 📱 Built with a responsive and modern UI for desktop and mobile devices.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 🚀 Live URL
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> **Production:**  
+> https://your-live-url.vercel.app
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# ✨ Key Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔐 Authentication
+- Email & Password Authentication
+- Google OAuth Login
+- Secure Session Management
+- Protected Routes
+- Role-Based Authentication (Buyer / Seller)
+
+## 🛒 Buyer Features
+- Browse Products
+- Search Products
+- View Product Details
+- Wishlist Management
+- Checkout (Demo)
+- Order History
+- Buyer Dashboard
+
+## 🏪 Seller Features
+- Seller Dashboard
+- Add Products
+- Edit Products
+- Delete Products
+- Manage Listings
+- View Orders
+
+## 🎨 User Interface
+- Fully Responsive Design
+- Modern UI with HeroUI
+- Tailwind CSS Styling
+- Loading & Error States
+- Beautiful Dashboard Layout
+
+## ⚙️ Backend
+- MongoDB Database
+- Better Auth Authentication
+- API Routes
+- Secure Cookies
+- Role & Status Management
+
+---
+
+# 📦 NPM Packages Used
+
+| Package | Purpose |
+|----------|----------|
+| next | React Framework |
+| react | UI Library |
+| react-dom | React DOM Rendering |
+| tailwindcss | Utility-First CSS Framework |
+| @heroui/react | UI Components |
+| @heroui/styles | HeroUI Styles |
+| react-icons | Icons |
+| better-auth | Authentication |
+| @better-auth/mongo-adapter | MongoDB Adapter |
+| mongodb | Database Driver |
+| @fontsource/inter | Inter Font |
+| @gravity-ui/icons | Dashboard Icons |
+
+---
+
+# 🛠️ Tech Stack
+
+### Frontend
+- Next.js 16
+- React 19
+- Tailwind CSS
+- HeroUI
+- React Icons
+
+### Backend
+- Next.js API Routes
+- Better Auth
+- MongoDB Atlas
+
+### Deployment
+- Vercel
+
+---
+
+<div align="center">
+
+⭐ If you like this project, consider giving it a star!
+
+Made with ❤️ using Next.js & MongoDB

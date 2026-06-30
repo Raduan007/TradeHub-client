@@ -9,18 +9,20 @@ export default function StripeCheckoutButton({ priceId = "product009", label = "
   const handleClick = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/create-checkout-session", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId }),
+        body: JSON.stringify({ productId: priceId }),
       });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("Stripe session creation failed", data);
-        alert("Unable to start payment. Please try again later.");
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error("Order creation failed", err);
+        alert(err.message || "Unable to place order. Please try again later.");
+        return;
       }
+      const data = await res.json();
+      // Show success message or navigate to order details
+      alert(`Order placed successfully! Order ID: ${data.orderId}`);
     } catch (err) {
       console.error(err);
       alert("Payment error: " + err.message);
