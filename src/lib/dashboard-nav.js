@@ -30,11 +30,6 @@ const buyerNav = [
     icon: FaHome,
   },
   {
-    href: `${ROLE_DASHBOARD_PATHS[USER_ROLES.BUYER]}/products`,
-    label: "Browse Products",
-    icon: FaShoppingBag,
-  },
-  {
     href: `${ROLE_DASHBOARD_PATHS[USER_ROLES.BUYER]}/orders`,
     label: "My Orders",
     icon: FaBox,

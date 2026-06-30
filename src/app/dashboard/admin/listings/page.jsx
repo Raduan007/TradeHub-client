@@ -106,7 +106,10 @@ export default function AdminListingsPage() {
                   <Chip size="sm" className="mt-2" variant="soft">{listing.status || "available"}</Chip>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" color="success" variant="flat" startContent={updatingId === listing.id ? <Spinner size="sm" /> : <FaCheck />} isLoading={updatingId === listing.id} onPress={() => updateListing(listing.id, { status: "available" })}>Approve</Button>
+                  <Button size="sm" color="success" variant="flat" isLoading={updatingId === listing.id} onPress={() => updateListing(listing.id, { status: "available" })}>
+                    <FaCheck className="mr-2" />
+                    Approve
+                  </Button>
                   <Button size="sm" color="danger" variant="flat" startContent={updatingId === listing.id ? <Spinner size="sm" /> : <FaTimes />} isLoading={updatingId === listing.id} onPress={() => updateListing(listing.id, { status: "rejected" })}>Reject</Button>
                   <Button size="sm" color="danger" variant="flat" startContent={updatingId === listing.id ? <Spinner size="sm" /> : <FaTrash />} onPress={() => deleteListing(listing.id)}>Delete</Button>
                 </div>

@@ -128,7 +128,8 @@ export default function ProductDetailsPage() {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link href={`/checkout?productId=${product.id}`} className="flex-1">
-              <Button color="primary" className="w-full" startContent={<FaShoppingCart />}>
+              <Button color="primary" className="w-full">
+                <FaShoppingCart className="mr-2" />
                 Buy Now
               </Button>
             </Link>
@@ -136,10 +137,11 @@ export default function ProductDetailsPage() {
               color="danger"
               variant="flat"
               className="flex-1"
-              startContent={isSaving ? <Spinner size="sm" /> : <FaHeart />}
               onPress={handleAddToWishlist}
+              isLoading={isSaving}
               isDisabled={isSaving}
             >
+              {isSaving ? <Spinner size="sm" className="mr-2" /> : <FaHeart className="mr-2" />}
               Add to Wishlist
             </Button>
           </div>

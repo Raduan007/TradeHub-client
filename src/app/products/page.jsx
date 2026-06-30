@@ -114,7 +114,6 @@ function ProductsPageContent() {
           placeholder="Search by name or category..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          startContent={<FaSearch className="text-slate-400" />}
           variant="bordered"
         />
         <select

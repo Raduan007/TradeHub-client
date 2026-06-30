@@ -183,13 +183,13 @@ export default function BuyerProfilePage() {
                 value={form.name}
                 onChange={handleChange}
                 variant="bordered"
-                isRequired
+                required
               />
 
               <Input
                 label="Email"
                 value={profile.email}
-                isReadOnly
+                readOnly
                 variant="bordered"
                 description="Email cannot be changed from the buyer dashboard."
               />
@@ -206,7 +206,7 @@ export default function BuyerProfilePage() {
               <Input
                 label="Role"
                 value={profile.role}
-                isReadOnly
+                readOnly
                 variant="bordered"
               />
 

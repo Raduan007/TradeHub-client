@@ -44,7 +44,10 @@ export default function SellerDashboardPage() {
           description="Manage listings, orders, and your seller business."
         />
         <Link href="/dashboard/seller/add-product">
-          <Button color="primary" startContent={<FaPlus />}>Add Product</Button>
+          <Button color="primary">
+  <FaPlus className="mr-2" />
+  Add Product
+</Button>
         </Link>
       </div>
 

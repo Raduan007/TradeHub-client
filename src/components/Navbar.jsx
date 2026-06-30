@@ -136,7 +136,7 @@ export default function Navbar() {
                 </button>
 
                 {profileOpen && (
-                  <ProfileDropdown onSignOut={handleSignOut} />
+                  <ProfileDropdown onSignOut={handleSignOut} role={role} />
                 )}
               </div>
             )}

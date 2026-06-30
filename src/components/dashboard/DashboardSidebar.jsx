@@ -14,10 +14,10 @@ export default function DashboardSidebar({ user, onNavigate }) {
   const homePath = getDashboardPathForRole(role);
 
   return (
-    <div className="flex h-full flex-col">
+   <div className="flex h-full w-full flex-col overflow-hidden">
       <div className="border-b border-slate-200 px-5 py-5 dark:border-slate-700">
         <Link
-          href={homePath}
+          href="/"
           onClick={onNavigate}
           className="flex items-center gap-3"
         >
@@ -44,9 +44,9 @@ export default function DashboardSidebar({ user, onNavigate }) {
         <DashboardNavLinks role={role} onNavigate={onNavigate} />
       </div>
 
-      <div className="border-t border-slate-200 p-4 dark:border-slate-700">
-        <DashboardUserCard user={user} />
-      </div>
+<div className="border-t border-slate-200 p-1 mr-2 dark:border-slate-700">
+  <DashboardUserCard user={user} />
+</div>
     </div>
   );
 }

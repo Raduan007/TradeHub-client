@@ -277,7 +277,7 @@ export default function AddProductPage() {
                   onChange={handleChange}
                   placeholder="e.g. iPhone 15 Pro Max"
                   variant="bordered"
-                  startContent={<FaTag className="text-slate-400" />}
+
                 />
                 <FieldError className="text-xs text-red-500 mt-1">{errors.name}</FieldError>
               </TextField>

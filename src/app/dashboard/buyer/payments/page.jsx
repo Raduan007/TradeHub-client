@@ -11,6 +11,8 @@ import PaymentStatusBadge from "@/components/buyer/PaymentStatusBadge";
 import TableSkeleton from "@/components/buyer/TableSkeleton";
 import { formatCurrency, formatDateTime } from "@/lib/format";
 
+import StripeCheckoutButton from '@/components/buyer/StripeCheckoutButton';
+
 export default function BuyerPaymentsPage() {
   const [payments, setPayments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,7 +50,8 @@ export default function BuyerPaymentsPage() {
         description="Review your payment history and transaction status."
       />
 
-      {isLoading ? <TableSkeleton rows={6} columns={5} /> : null}
+      <StripeCheckoutButton className="mb-4" />
+{isLoading ? <TableSkeleton rows={6} columns={5} /> : null}
 
       {!isLoading && error ? (
         <BuyerErrorState
