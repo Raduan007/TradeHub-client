@@ -17,9 +17,9 @@ export default function LayoutClient({ children }) {
     <ThemeProvider>
       {!isDashboardPage && <Navbar />}
       <main
-        className={
+        className={`animate-fadeIn ${
           isAuthPage || isDashboardPage ? "w-full" : "mx-auto max-w-7xl"
-        }
+        }`}
       >
         {children}
       </main>

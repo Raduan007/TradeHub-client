@@ -8,7 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { ALLOWED_SIGNUP_ROLES } from "@/lib/user-roles";
 
 import { signIn } from "@/lib/auth-client";
-import { toast } from "@heroui/react";
+import { toast } from "react-hot-toast";
 
 export default function SignInPage() {
   const router = useRouter();

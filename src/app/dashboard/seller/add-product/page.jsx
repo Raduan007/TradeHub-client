@@ -32,7 +32,7 @@ import {
 } from "react-icons/fa";
 
 import { formatCurrency } from "@/lib/format";
-import { toast } from "@heroui/react";
+import { toast } from "react-hot-toast";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 

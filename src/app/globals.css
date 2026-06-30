@@ -137,6 +137,16 @@ body {
   font-family: "Inter", Arial, sans-serif;
 }
 
+/* Global fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+html, body {
+  animation: fadeIn 0.5s ease-out;
+}
+
 /* Light mode specific styles */
 html:not(.dark) {
   background-color: #ffffff;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Divider, Avatar, Button } from "@heroui/react";
+import { Card, Avatar, Button } from "@heroui/react";
 
 /**
  * PaymentSummary – a reusable component that renders the checkout details.
@@ -78,7 +78,7 @@ export default function PaymentSummary({ session }) {
           </div>
         ))}
 
-        <Divider className="my-4" />
+        <hr className="my-4 border-slate-200 dark:border-slate-800" />
         <div className="flex justify-between">
           <span>Subtotal</span>
           <span>{format(subtotal)}</span>
@@ -91,7 +91,7 @@ export default function PaymentSummary({ session }) {
           <span>Shipping</span>
           <span>{format(amount_shipping)}</span>
         </div>
-        <Divider className="my-4" />
+        <hr className="my-4 border-slate-200 dark:border-slate-800" />
         <div className="flex justify-between text-xl font-semibold">
           <span>Total</span>
           <span>{format(amount_total)}</span>

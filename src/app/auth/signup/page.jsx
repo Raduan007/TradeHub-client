@@ -18,7 +18,7 @@ import {
 } from "react-icons/fa";
 
 import { signIn, signUp } from "@/lib/auth-client";
-import { toast } from "@heroui/react";
+import { toast } from "react-hot-toast";
 import {
   ALLOWED_SIGNUP_ROLES,
   DEFAULT_USER_ROLE,

@@ -63,8 +63,8 @@ export default function SellerMessagesPage() {
         <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">Send Message</h2>
         <form onSubmit={handleSend} className="grid gap-4 md:grid-cols-2">
           <Input label="Buyer Name" value={form.buyerName} onChange={(e) => setForm({ ...form, buyerName: e.target.value })} variant="bordered" />
-          <Input label="Subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} variant="bordered" isRequired />
-          <TextArea label="Message" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} variant="bordered" className="md:col-span-2" minRows={4} isRequired />
+          <Input label="Subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} variant="bordered" required />
+          <TextArea label="Message" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} variant="bordered" className="md:col-span-2" rows={4} required />
           <Button type="submit" color="primary" isLoading={isSending}>Send Message</Button>
         </form>
       </Card>
